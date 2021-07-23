@@ -70,14 +70,8 @@ function DataInit() {
       });
     }
     dummyData.db.transaction((tx) => {
-      tx.executeSql(
-        "insert into recipes (id, name, duration, serving, category) values (?,?,?,?,?)",
-        [1, "SQlite", "long", 2, "Pasta"]
-      );
-      tx.executeSql(
-        "insert into recipes (id, name, duration, serving, category) values (?,?,?,?,?)",
-        [2, "Lat Raises", "short", 3, "Local"]
-      );
+      tx.executeSql();
+      tx.executeSql();
 
       tx.executeSql("select * from recipes", [], (_, { rows }) =>
         console.log(JSON.stringify(rows) + "hi")
