@@ -255,28 +255,9 @@ const trendingRecipes = [
   },
 ];
 
-function OpenDatabase() {
-  if (Platform.OS === "web") {
-    return {
-      transaction: () => {
-        return {
-          executeSql: () => {},
-        };
-      },
-    };
-  }
-
-  const db = SQLite.openDatabase("db.db");
-
-  return db;
-}
-
-const db = OpenDatabase();
-
 const categories = trendingRecipes;
 
 export default {
   trendingRecipes,
   categories,
-  db,
 };
