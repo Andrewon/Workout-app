@@ -8,6 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
   StatusBar,
+  Button,
 } from "react-native";
 import CategoryCard from "../components/CategoryCard";
 
@@ -55,6 +56,12 @@ const Home = ({ navigation }) => {
             {/* Header */}
             {renderHeader()}
             {/* Search bar */}
+            <Button
+              onPress={() => {
+                navigation.navigate("Create");
+              }}
+              title={"Create Workout"}
+            />
             {/* See workout card */}
             {/* category Header */}
           </View>
