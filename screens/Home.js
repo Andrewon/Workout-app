@@ -103,7 +103,7 @@ const Home = ({ navigation }) => {
               onPress={() => {
                 navigation.navigate("Create");
               }}
-              title={"Create Workout"}
+              title={"Create Routine"}
             />
             {/* See workout card */}
             {/* category Header */}
