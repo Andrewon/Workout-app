@@ -1,39 +1,60 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  SafeAreaView,
+  Alert,
+} from "react-native";
 import { SIZES } from "../constants";
+import * as SQLite from "expo-sqlite";
 
-const Add = () => {
-  let [exerciseName, setExerciseName] = useState("");
-  let [set, setSet] = useState("");
-  let [rep, setRep] = useState("");
+var db = SQLite.openDatabase("UserDatabase.db");
+
+const Add = ({ navigation }) => {
+  let [RoutineName, setRoutineName] = useState("");
 
   let add_user = () => {
-    alert("submited " + exerciseName);
+    console.log(RoutineName);
+
+    if (!RoutineName) {
+      alert("Please enter Routine Name");
+      return;
+    }
+
+    db.transaction(function (tx) {
+      tx.executeSql(
+        "INSERT INTO routine_table (routine_name) VALUES (?)",
+        [RoutineName],
+        (tx, results) => {
+          console.log("Results", results.rowsAffected);
+          if (results.rowsAffected > 0) {
+            Alert.alert(
+              "Success",
+              "Routine Added Successfully",
+              [
+                {
+                  text: "Ok",
+                  onPress: () => navigation.navigate("Home"),
+                },
+              ],
+              { cancelable: false }
+            );
+          } else alert("Creating Routine Failed");
+        }
+      );
+    });
   };
 
   return (
     <SafeAreaView>
       <View>
-        <Text>Add screen</Text>
         <TextInput
           style={SIZES.input}
-          onChangeText={setExerciseName}
-          value={exerciseName}
-          placeholder={"Enter Name"}
-        ></TextInput>
-        <TextInput
-          style={SIZES.input}
-          onChangeText={setSet}
-          value={set}
-          placeholder={"Number of Set"}
-          keyboardType={"numeric"}
-        ></TextInput>
-        <TextInput
-          style={SIZES.input}
-          onChangeText={setRep}
-          value={rep}
-          placeholder={"Number of Rep"}
-          keyboardType={"numeric"}
+          onChangeText={setRoutineName}
+          value={RoutineName}
+          placeholder={"Enter Routine Name"}
         ></TextInput>
 
         <Button title={"Submit"} onPress={add_user} />
