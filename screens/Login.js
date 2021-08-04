@@ -1,27 +1,80 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import {
-    View,
-    Text,
-    TouchableOpacity
-} from 'react-native';
+  View,
+  Text,
+  SafeAreaView,
+  FlatList,
+  StatusBar,
+  Button,
+} from "react-native";
+import * as SQLite from "expo-sqlite";
+
+import { FONTS, COLORS, SIZES, images, icons } from "../constants";
+
+import { recipe } from "../screens";
+
+var db = SQLite.openDatabase("UserDatabase.db");
 
 const Login = ({ navigation }) => {
-    return (
-        <View
+  let [flatListItems, setFlatListItems] = useState([]);
+
+  function renderHeader() {
+    useEffect(() => {
+      db.transaction(function (txn) {
+        txn.executeSql("SELECT * FROM exercise_table", [], (tx, results) => {
+          var temp = [];
+          for (let i = 0; i < results.rows.length; ++i)
+            temp.push(results.rows.item(i));
+          setFlatListItems(temp);
+        });
+      });
+    });
+  }
+  return (
+    <SafeAreaView
+      style={{
+        flex: 1,
+        backgroundColor: COLORS.white,
+      }}
+    >
+      <StatusBar barStyle={"default"} />
+      <FlatList
+        data={flatListItems}
+        keyExtractor={(item, index) => "${item.exercise_id}" + index}
+        keyboardDismissMode="on-drag"
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <View>
+            {/* Header */}
+            {renderHeader()}
+            {/* Create New  routine, maybe darkmode button, edit button */}
+            <Button
+              onPress={() => {
+                navigation.navigate("Create");
+              }}
+              title={"Create Routine"}
+            />
+            {/* See Routine Card */}
+            {/* Category Header */}
+          </View>
+        }
+        renderItem={({ item }) => {
+          return (
+            <View>
+              <Text>Exercise name:{item.index}</Text>
+            </View>
+          );
+        }}
+        ListFooterComponent={
+          <View
             style={{
-                flex: 1,
-                alignItems: 'center',
-                justifyContent: 'center'
+              marginBottom: 100,
             }}
-        >
-            <Text>Login</Text>
-            <TouchableOpacity
-                onPress={() => navigation.replace("Home")}
-            >
-                <Text>Navigate to Home</Text>
-            </TouchableOpacity>
-        </View>
-    )
-}
+          ></View>
+        }
+      ></FlatList>
+    </SafeAreaView>
+  );
+};
 
 export default Login;

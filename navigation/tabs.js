@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Home, Recipe } from "../screens";
+import { Home, Login, Recipe } from "../screens";
 import { TabIcon } from "../components";
 import { COLORS, icons } from "../constants";
 
@@ -55,7 +55,7 @@ const Tabs = () => {
 
       <Tab.Screen
         name="Settings"
-        component={Recipe}
+        component={Login}
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} icon={icons.settings} />

@@ -22,6 +22,7 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     db.transaction(function (txn) {
+      txn.executeSql("PRAGMA foreign_keys = ON", []);
       txn.executeSql(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='routine_table'",
         [],
@@ -34,14 +35,21 @@ const Home = ({ navigation }) => {
               []
             );
           }
-          // else {
-          //   txn.executeSql("SELECT * FROM routine_table", [], (tx, results) => {
-          //     var temp = [];
-          //     for (let i = 0; i < results.rows.length; ++i)
-          //       temp.push(results.rows.item(i));
-          //     setFlatListItems(temp);
-          //   });
-          // }
+        }
+      );
+
+      txn.executeSql(
+        "SELECT name FROM sqlite_master WHERE type='table' AND name='exercise_table'",
+        [],
+        function (tx, res) {
+          console.log("item:", res.rows.length);
+          if (res.rows.length == 0) {
+            txn.executeSql("DROP TABLE IF EXISTS exercise_table", []);
+            txn.executeSql(
+              "CREATE TABLE IF NOT EXISTS exercise_table(exercise_id INTEGER PRIMARY KEY AUTOINCREMENT, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, CONSTRAINT fk_routine_id  FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
+              []
+            );
+          }
         }
       );
     });
@@ -68,7 +76,7 @@ const Home = ({ navigation }) => {
           height: 80,
         }}
       >
-        {/* Hello text */}
+        {/* Welcome text */}
         <View style={{ flex: 1 }}>
           <Text style={{ color: COLORS.darkGreen, ...FONTS.h2 }}>
             Hello Andy,
@@ -98,15 +106,15 @@ const Home = ({ navigation }) => {
           <View>
             {/* Header */}
             {renderHeader()}
-            {/* Search bar */}
+            {/* Create New  routine, maybe darkmode button, edit button */}
             <Button
               onPress={() => {
                 navigation.navigate("Create");
               }}
               title={"Create Routine"}
             />
-            {/* See workout card */}
-            {/* category Header */}
+            {/* See Routine Card */}
+            {/* Category Header */}
           </View>
         }
         renderItem={({ item }) => {
