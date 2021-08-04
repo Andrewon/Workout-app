@@ -16,42 +16,46 @@ import { COLORS } from "../constants";
 var db = SQLite.openDatabase("UserDatabase.db");
 
 const Recipe = () => {
-  const [inputs, setInputs] = useState([
+  const [inputList, setInputs] = useState([
     { exerSet: "", exerRep: "", exerName: "" },
   ]);
 
   const addHandler = () => {
-    const _inputs = [...inputs];
+    const _inputs = [...inputList];
     _inputs.push({ exerSet: "", exerRep: "", exerName: "" });
     setInputs(_inputs);
   };
 
   const deleteHandler = (key) => {
-    const _inputs = inputs.filter((input, index) => index != key);
+    const _inputs = inputList.filter((input, index) => index != key);
     setInputs(_inputs);
   };
 
   const inputHandler = (text, key, name) => {
-    const _inputs = [...inputs];
+    const _inputs = [...inputList];
     console.log(text, "key:  " + key, "name: " + name);
-    // name is a 2d array column consist of inputs  [name,name,name...]
+    // name is a 2d array column consist of inputList  [name,name,name...]
     _inputs[key][name] = text;
 
     setInputs(_inputs);
-    console.log(JSON.stringify(_inputs));
+    console.log(_inputs[0]["exerName"]);
   };
-
+  //add exercises from inputList into a SQLite
   let add_exercise = () => {
     db.transaction(function (tx) {
-      for (let i = 0; i < inputList.length - 1; i++) {
+      for (let i = 0; i < inputList.length; i++) {
+        console.log("inside query", inputList[i]["exerName"]);
         tx.executeSql(
-          "INSERT INTO exercise_table (routine_name,eset,rep,routine_id) VALUES (?,?,?,?)",
+          "INSERT INTO exercise_table(exercise_name,eset,rep,routine_id) VALUES (?,?,?,?)",
           [
-            inputs[i][exerName],
-            inputs[i][exerSet],
-            inputs[i][exerRep],
-            inputs[i][exerRoutineID],
-          ]
+            inputList[i]["exerName"],
+            Number(inputList[i]["exerSet"]),
+            Number(inputList[i]["exerRep"]),
+            1,
+          ],
+          (tx, results) => {
+            console.log("Results", results.rowsAffected);
+          }
         );
       }
     });
@@ -60,33 +64,33 @@ const Recipe = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.inputsContainer}>
-        {inputs.map((input, key) => (
+        {inputList.map((input, index) => (
           <View style={styles.inputContainer}>
             <TextInput
               placeholder={"Enter Name"}
               value={input.exerName}
-              onChangeText={(text) => inputHandler(text, key, "exerName")}
+              onChangeText={(text) => inputHandler(text, index, "exerName")}
             />
             <TextInput
               placeholder={"Enter Set"}
               value={input.exerSep}
               keyboardType={"number-pad"}
-              onChangeText={(text) => inputHandler(text, key, "exerSet")}
+              onChangeText={(text) => inputHandler(text, index, "exerSet")}
             />
             <TextInput
               placeholder={"Enter Rep"}
               value={input.exerRep}
               keyboardType={"number-pad"}
-              onChangeText={(text) => inputHandler(text, key, "exerRep")}
+              onChangeText={(text) => inputHandler(text, index, "exerRep")}
             />
-            <TouchableOpacity onPress={() => deleteHandler(key)}>
+            <TouchableOpacity onPress={() => deleteHandler(index)}>
               <Text style={{ color: "red", fontSize: 13 }}>Delete</Text>
             </TouchableOpacity>
           </View>
         ))}
       </ScrollView>
       <Button title="Add" onPress={addHandler} />
-      <Button title="Submit" onPress={addHandler} />
+      <Button title="Submit" onPress={add_exercise} />
     </SafeAreaView>
   );
 };

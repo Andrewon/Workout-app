@@ -46,8 +46,11 @@ const Home = ({ navigation }) => {
           if (res.rows.length == 0) {
             txn.executeSql("DROP TABLE IF EXISTS exercise_table", []);
             txn.executeSql(
-              "CREATE TABLE IF NOT EXISTS exercise_table(exercise_id INTEGER PRIMARY KEY AUTOINCREMENT, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, CONSTRAINT fk_routine_id  FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
-              []
+              "CREATE TABLE IF NOT EXISTS exercise_table(exercise_id INTEGER PRIMARY KEY AUTOINCREMENT, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
+              [],
+              (tx, results) => {
+                console.log("Results", results.rowsAffected);
+              }
             );
           }
         }

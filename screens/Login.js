@@ -15,6 +15,7 @@ import { recipe } from "../screens";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
+//test display exercise_table items
 const Login = ({ navigation }) => {
   let [flatListItems, setFlatListItems] = useState([]);
 
@@ -61,7 +62,9 @@ const Login = ({ navigation }) => {
         renderItem={({ item }) => {
           return (
             <View>
-              <Text>Exercise name:{item.index}</Text>
+              <Text>
+                Exercise name:{item.exercise_name} Set: {item.set}
+              </Text>
             </View>
           );
         }}
