@@ -126,7 +126,7 @@ const Home = ({ navigation }) => {
               <CategoryCard
                 containerStyle={{ marginHorizontal: SIZES.padding }}
                 categoryItem={item}
-                onPress={() => navigation.navigate("Recipe", { recipe: item })}
+                onPress={() => navigation.navigate("Display Exercise")}
               />
             </View>
           );

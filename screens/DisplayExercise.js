@@ -11,8 +11,6 @@ import * as SQLite from "expo-sqlite";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 
-import { recipe } from "../screens";
-
 var db = SQLite.openDatabase("UserDatabase.db");
 
 //test display exercise_table items

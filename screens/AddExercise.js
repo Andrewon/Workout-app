@@ -15,7 +15,7 @@ import { COLORS } from "../constants";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
-const Recipe = () => {
+const AddExercise = () => {
   const [inputList, setInputs] = useState([
     { exerSet: "", exerRep: "", exerName: "" },
   ]);
@@ -116,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Recipe;
+export default AddExercise;

@@ -9,7 +9,8 @@ import {
 } from "react-native";
 import { SIZES } from "../constants";
 import * as SQLite from "expo-sqlite";
-import Recipe from "./Recipe";
+import AddExercise from "./AddExercise";
+import TestDisplay from "./ExerciseDisplay";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
@@ -59,7 +60,7 @@ const Add = ({ navigation }) => {
         ></TextInput>
 
         <Button title={"Submit"} onPress={add_user} />
-        <Recipe></Recipe>
+        <TestDisplay></TestDisplay>
       </View>
     </SafeAreaView>
   );

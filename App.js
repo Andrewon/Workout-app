@@ -1,5 +1,5 @@
 import React from "react";
-import { Login, Recipe, Add } from "./screens";
+import { DisplayExercise, AddExercise, Add } from "./screens";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
@@ -16,9 +16,9 @@ const App = () => {
         }}
         initialRouteName={"Home"}
       >
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Display Exercise" component={DisplayExercise} />
         <Stack.Screen name="Home" component={Tabs} />
-        <Stack.Screen name="Recipe" component={Recipe} />
+        <Stack.Screen name="Add Exercise" component={AddExercise} />
         <Stack.Screen name="Create" component={Add} />
       </Stack.Navigator>
     </NavigationContainer>

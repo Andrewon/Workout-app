@@ -1,6 +1,6 @@
-import Login from "./Login";
+import DisplayExercise from "./DisplayExercise";
 import Home from "./Home";
-import Recipe from "./Recipe";
+import AddExercise from "./AddExercise";
 import Add from "./Add";
 
-export { Login, Home, Recipe, Add };
+export { DisplayExercise, Home, AddExercise, Add };
