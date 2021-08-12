@@ -14,18 +14,28 @@ import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 var db = SQLite.openDatabase("UserDatabase.db");
 
 //test display exercise_table items
-const Login = ({ navigation }) => {
+const DisplayExercise = ({ navigation, route }) => {
   let [flatListItems, setFlatListItems] = useState([]);
+
+  const { selectedRoutine } = route.params;
+
+  useEffect(() => {
+    alert(selectedRoutine);
+  }, []);
 
   function renderHeader() {
     useEffect(() => {
       db.transaction(function (txn) {
-        txn.executeSql("SELECT * FROM exercise_table", [], (tx, results) => {
-          var temp = [];
-          for (let i = 0; i < results.rows.length; ++i)
-            temp.push(results.rows.item(i));
-          setFlatListItems(temp);
-        });
+        txn.executeSql(
+          "SELECT * FROM exercise_table WHERE routine_id=?",
+          [selectedRoutine],
+          (tx, results) => {
+            var temp = [];
+            for (let i = 0; i < results.rows.length; ++i)
+              temp.push(results.rows.item(i));
+            setFlatListItems(temp);
+          }
+        );
       });
     });
   }
@@ -46,22 +56,13 @@ const Login = ({ navigation }) => {
           <View>
             {/* Header */}
             {renderHeader()}
-            {/* Create New  routine, maybe darkmode button, edit button */}
-            <Button
-              onPress={() => {
-                navigation.navigate("Create");
-              }}
-              title={"Create Routine"}
-            />
-            {/* See Routine Card */}
-            {/* Category Header */}
           </View>
         }
         renderItem={({ item }) => {
           return (
             <View>
               <Text>
-                Exercise name:{item.exercise_name} Set: {item.set}
+                Exercise name:{item.exercise_name} Set: {item.eset}
               </Text>
             </View>
           );
@@ -78,4 +79,4 @@ const Login = ({ navigation }) => {
   );
 };
 
-export default Login;
+export default DisplayExercise;

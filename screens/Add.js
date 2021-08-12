@@ -9,13 +9,12 @@ import {
 } from "react-native";
 import { SIZES } from "../constants";
 import * as SQLite from "expo-sqlite";
-import AddExercise from "./AddExercise";
-import TestDisplay from "./ExerciseDisplay";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
 const Add = ({ navigation }) => {
-  let [RoutineName, setRoutineName] = useState("");
+  var [RoutineName, setRoutineName] = useState("");
+  let [routineID, setRoutineID] = useState("");
 
   let add_user = () => {
     console.log(RoutineName);
@@ -32,13 +31,20 @@ const Add = ({ navigation }) => {
         (tx, results) => {
           console.log("Results", results.rowsAffected);
           if (results.rowsAffected > 0) {
+            // get routine_id from insertID result to pass to AddExercise.js
+            setRoutineID(results.insertId);
+
             Alert.alert(
               "Success",
-              "Routine Added Successfully",
+              "Routine Added Successfully" + routineID,
+
               [
                 {
                   text: "Ok",
-                  onPress: () => navigation.navigate("Home"),
+                  onPress: () =>
+                    navigation.navigate("Add Exercise", {
+                      routineID: results.insertId,
+                    }),
                 },
               ],
               { cancelable: false }
@@ -60,7 +66,6 @@ const Add = ({ navigation }) => {
         ></TextInput>
 
         <Button title={"Submit"} onPress={add_user} />
-        <TestDisplay></TestDisplay>
       </View>
     </SafeAreaView>
   );

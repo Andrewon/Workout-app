@@ -1,5 +1,6 @@
 import React from "react";
-import { View, TouchableOpacity, Text, Image } from "react-native";
+import { View, TouchableOpacity, Text, Image, Button } from "react-native";
+import DeleteStuff from "../screens/Delete";
 
 import { COLORS, FONTS, SIZES } from "../constants";
 
@@ -27,6 +28,10 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
         <Text style={{ color: COLORS.gray }}>
           {categoryItem.duration} Rep | {categoryItem.serving} Set
         </Text>
+        <Button
+          title={"Delete"}
+          onPress={() => DeleteStuff({ deleteInfo: categoryItem.routine_id })}
+        />
       </View>
     </TouchableOpacity>
   );

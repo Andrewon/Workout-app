@@ -8,14 +8,22 @@ import {
   StyleSheet,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 
 import { COLORS } from "../constants";
+import { Add } from "../screens";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
-const AddExercise = () => {
+const AddExercise = ({ navigation, route }) => {
+  let { routineID } = route.params;
+
+  useEffect(() => {
+    alert(routineID);
+  }, []);
+
   const [inputList, setInputs] = useState([
     { exerSet: "", exerRep: "", exerName: "" },
   ]);
@@ -42,6 +50,21 @@ const AddExercise = () => {
   };
   //add exercises from inputList into a SQLite
   let add_exercise = () => {
+    if (!inputList[0]["exerName"]) {
+      alert("Please enter exercise name");
+      return;
+    }
+
+    if (!inputList[0]["exerRep"]) {
+      alert("Please enter number of rep");
+      return;
+    }
+
+    if (!inputList[0]["exerSet"]) {
+      alert("Please enter number of set");
+      return;
+    }
+
     db.transaction(function (tx) {
       for (let i = 0; i < inputList.length; i++) {
         console.log("inside query", inputList[i]["exerName"]);
@@ -51,24 +74,51 @@ const AddExercise = () => {
             inputList[i]["exerName"],
             Number(inputList[i]["exerSet"]),
             Number(inputList[i]["exerRep"]),
-            1,
+            routineID,
           ],
           (tx, results) => {
             console.log("Results", results.rowsAffected);
+            if (results.rowsAffected > 0) {
+            } else
+              Alert.alert(
+                "Error",
+                "Adding Exercise Failed",
+                [
+                  {
+                    text: "Ok",
+                    onPress: () => navigation.navigate("Home"),
+                  },
+                ],
+                { cancelable: false }
+              );
           }
         );
       }
     });
+    Alert.alert(
+      "Done",
+      "Exercise(s) added",
+      [
+        {
+          text: "Ok",
+          onPress: () => navigation.goBack(),
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.inputsContainer}>
+    <SafeAreaView>
+      <ScrollView>
+        <Button title="Add" onPress={addHandler} />
+        <Button title="Submit" onPress={add_exercise} />
         {inputList.map((input, index) => (
-          <View style={styles.inputContainer}>
+          <View>
             <TextInput
               placeholder={"Enter Name"}
               value={input.exerName}
+              editable={true}
               onChangeText={(text) => inputHandler(text, index, "exerName")}
             />
             <TextInput
@@ -89,8 +139,6 @@ const AddExercise = () => {
           </View>
         ))}
       </ScrollView>
-      <Button title="Add" onPress={addHandler} />
-      <Button title="Submit" onPress={add_exercise} />
     </SafeAreaView>
   );
 };
