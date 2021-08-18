@@ -2,11 +2,8 @@ import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
-  Image,
   SafeAreaView,
-  TextInput,
   FlatList,
-  TouchableOpacity,
   StatusBar,
   Button,
 } from "react-native";
@@ -27,12 +24,18 @@ const Home = ({ navigation }) => {
         "SELECT name FROM sqlite_master WHERE type='table' AND name='routine_table'",
         [],
         function (tx, res) {
-          console.log("item:", res.rows.length);
+          console.log("item_routine:", res.rows.length);
           if (res.rows.length == 0) {
             txn.executeSql("DROP TABLE IF EXISTS routine_table", []);
             txn.executeSql(
-              "CREATE TABLE IF NOT EXISTS routine_table(routine_id INTEGER PRIMARY KEY AUTOINCREMENT, routine_name VARCHAR(20))",
-              []
+              "CREATE TABLE IF NOT EXISTS routine_table(routine_id INTEGER PRIMARY KEY AUTOINCREMENT, routine_name VARCHAR(20), exercises_count INTEGER)",
+              [],
+              (tx, results) => {
+                console.log("Results_routine", results.rowsAffected);
+              },
+              (tx, error) => {
+                console.log(error);
+              }
             );
           }
         }
@@ -42,14 +45,17 @@ const Home = ({ navigation }) => {
         "SELECT name FROM sqlite_master WHERE type='table' AND name='exercise_table'",
         [],
         function (tx, res) {
-          console.log("item:", res.rows.length);
+          console.log("item_exercise:", res.rows.length);
           if (res.rows.length == 0) {
             txn.executeSql("DROP TABLE IF EXISTS exercise_table", []);
             txn.executeSql(
               "CREATE TABLE IF NOT EXISTS exercise_table(exercise_id INTEGER PRIMARY KEY AUTOINCREMENT, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
               [],
               (tx, results) => {
-                console.log("Results", results.rowsAffected);
+                console.log("Results_exercise", results.rowsAffected);
+              },
+              (tx, error) => {
+                console.log(error);
               }
             );
           }
@@ -57,22 +63,6 @@ const Home = ({ navigation }) => {
       );
     });
   }, []);
-
-  // var numberOfExercise = 1;
-
-  // const getNumOfExercise = (routineID) => {
-  //   db.transaction((txn) => {
-  //     txn.executeSql(
-  //       "SELECT * FROM exercise_table WHERE routine_id=?",
-  //       [routineID],
-  //       (tx, results) => {
-  //         numberOfExercise = results.rows.length;
-  //         console.log(numberOfExercise);
-  //       },
-  //       []
-  //     );
-  //   });
-  // };
 
   function renderHeader() {
     useEffect(() => {
@@ -143,13 +133,9 @@ const Home = ({ navigation }) => {
                 containerStyle={{ marginHorizontal: SIZES.padding }}
                 categoryItem={item}
                 onPress={() =>
-                  navigation.navigate(
-                    "Edit Routine",
-                    {
-                      selectedRoutine: item.routine_id,
-                    },
-                    alert("numEx" + numberOfExercise)
-                  )
+                  navigation.navigate("Display Exercise", {
+                    selectedRoutine: item.routine_id,
+                  })
                 }
               />
             </View>

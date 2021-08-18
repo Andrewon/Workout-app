@@ -47,6 +47,26 @@ const AddExercise = ({ navigation, route }) => {
     setInputs(_inputs);
     console.log(_inputs[0]["exerName"]);
   };
+
+  const getExercisesCount = () => {
+    //maybe take this to a whole separate file
+    db.transaction((txn) => {
+      txn.executeSql(
+        "SELECT * FROM exercise_table WHERE routine_id=?",
+        [routineID],
+        (tx, results) => {
+          tx.executeSql(
+            "UPDATE routine_table SET exercises_count=? WHERE routine_id=?",
+            [results.rows.length, routineID]
+          );
+        },
+        (tx, error) => {
+          console.log(error);
+        }
+      );
+    });
+  };
+
   //add exercises from inputList into a SQLite
   let add_exercise = () => {
     for (let i = 0; i < inputList.length; i++) {
@@ -107,6 +127,8 @@ const AddExercise = ({ navigation, route }) => {
       ],
       { cancelable: false }
     );
+
+    getExercisesCount();
   };
 
   return (

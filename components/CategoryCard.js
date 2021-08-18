@@ -5,13 +5,9 @@ import { useNavigation } from "@react-navigation/native";
 
 import { COLORS, FONTS, SIZES } from "../constants";
 
-const CategoryCard = ({
-  numOfExercise,
-  containerStyle,
-  categoryItem,
-  onPress,
-}) => {
+const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
   const navigation = useNavigation();
+
   return (
     <TouchableOpacity
       style={{
@@ -51,14 +47,15 @@ const CategoryCard = ({
             flex: 1,
           }}
         >
-          <Text numberOfLines={1} style={{ flex: 1 }}>
+          <Text numberOfLines={1} style={{ flex: 1, ...FONTS.h2 }}>
             {categoryItem.routine_name}
           </Text>
-          <Text style={{ color: COLORS.gray, paddingTop: 10 }}>
-            {numOfExercise} Rep | {categoryItem.serving} Set
+          {/* prettier-ignore */}
+          <Text style={{...FONTS.body4, color: COLORS.gray, paddingTop: 10 }}>
+            {categoryItem.exercises_count} Exercise(s) | {categoryItem.exercises_count * 9} mins
           </Text>
         </View>
-        <View //container fro delete and edit buttons
+        <View //container for delete and edit buttons
           style={{
             flexDirection: "row",
             justifyContent: "flex-end",

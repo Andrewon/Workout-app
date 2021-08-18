@@ -6,8 +6,10 @@ import {
   FlatList,
   StatusBar,
   Button,
+  ScrollView,
 } from "react-native";
 import * as SQLite from "expo-sqlite";
+import ExerciseCard from "../components/ExerciseCard";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 
@@ -23,7 +25,7 @@ const DisplayExercise = ({ navigation, route }) => {
     alert(selectedRoutine);
   }, []);
 
-  function renderHeader() {
+  function renderList() {
     useEffect(() => {
       db.transaction(function (txn) {
         txn.executeSql(
@@ -42,28 +44,30 @@ const DisplayExercise = ({ navigation, route }) => {
   return (
     <SafeAreaView
       style={{
-        flex: 1,
+        flexDirection: "column",
         backgroundColor: COLORS.white,
       }}
     >
       <StatusBar barStyle={"default"} />
+
       <FlatList
         data={flatListItems}
         keyExtractor={(item, index) => "${item.exercise_id}" + index}
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <View>
-            {/* Header */}
-            {renderHeader()}
-          </View>
-        }
+        ListHeaderComponent={<View>{renderList()}</View>}
         renderItem={({ item }) => {
           return (
             <View>
-              <Text>
-                Exercise name:{item.exercise_name} Set: {item.eset}
-              </Text>
+              <ExerciseCard
+                containerStyle={{ marginHorizontal: SIZES.padding }}
+                exerciseItem={item}
+                onPress={() => console.log("exercise pressed")}
+              />
+              {/* prettier-ignore */}
+              {/* <Text>
+                Exercise name:{item.exercise_name} Set: {item.eset} Rep: {item.rep}
+              </Text> */}
             </View>
           );
         }}
@@ -75,6 +79,16 @@ const DisplayExercise = ({ navigation, route }) => {
           ></View>
         }
       ></FlatList>
+
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "flex-end",
+          backgroundColor: "green",
+        }}
+      >
+        <Button title={"Finish"} />
+      </View>
     </SafeAreaView>
   );
 };
