@@ -13,7 +13,6 @@ import {
 import * as SQLite from "expo-sqlite";
 
 import { COLORS } from "../constants";
-import { Add } from "../screens";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
@@ -50,19 +49,21 @@ const AddExercise = ({ navigation, route }) => {
   };
   //add exercises from inputList into a SQLite
   let add_exercise = () => {
-    if (!inputList[0]["exerName"]) {
-      alert("Please enter exercise name");
-      return;
-    }
+    for (let i = 0; i < inputList.length; i++) {
+      if (!inputList[i]["exerName"]) {
+        alert("Please enter exercise name");
+        return;
+      }
 
-    if (!inputList[0]["exerRep"]) {
-      alert("Please enter number of rep");
-      return;
-    }
+      if (!inputList[i]["exerRep"]) {
+        alert("Please enter number of rep");
+        return;
+      }
 
-    if (!inputList[0]["exerSet"]) {
-      alert("Please enter number of set");
-      return;
+      if (!inputList[i]["exerSet"]) {
+        alert("Please enter number of set");
+        return;
+      }
     }
 
     db.transaction(function (tx) {
@@ -113,6 +114,12 @@ const AddExercise = ({ navigation, route }) => {
       <ScrollView>
         <Button title="Add" onPress={addHandler} />
         <Button title="Submit" onPress={add_exercise} />
+        <Button
+          title={"test going back"}
+          onPress={() => {
+            navigation.goBack();
+          }}
+        />
         {inputList.map((input, index) => (
           <View>
             <TextInput

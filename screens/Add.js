@@ -9,12 +9,20 @@ import {
 } from "react-native";
 import { SIZES } from "../constants";
 import * as SQLite from "expo-sqlite";
+import { useEffect } from "react/cjs/react.production.min";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
 const Add = ({ navigation }) => {
   var [RoutineName, setRoutineName] = useState("");
-  let [routineID, setRoutineID] = useState("");
+  var routineID = "";
+
+  let add_exercise = () => {
+    navigation.navigate("Add Exercise", {
+      routineID,
+    });
+    console.log("called add_exercise");
+  };
 
   let add_user = () => {
     console.log(RoutineName);
@@ -32,23 +40,24 @@ const Add = ({ navigation }) => {
           console.log("Results", results.rowsAffected);
           if (results.rowsAffected > 0) {
             // get routine_id from insertID result to pass to AddExercise.js
-            setRoutineID(results.insertId);
+            routineID = results.insertId;
+            console.log(routineID);
+            add_exercise();
+            // Alert.alert(
+            //   "Success",
+            //   "Routine Added Successfully",
 
-            Alert.alert(
-              "Success",
-              "Routine Added Successfully" + routineID,
-
-              [
-                {
-                  text: "Ok",
-                  onPress: () =>
-                    navigation.navigate("Add Exercise", {
-                      routineID: results.insertId,
-                    }),
-                },
-              ],
-              { cancelable: false }
-            );
+            //   [
+            //     {
+            //       text: "Ok",
+            //       onPress: () =>
+            //         navigation.navigate("Add Exercise", {
+            //           routineID: results.insertId,
+            //         }),
+            //     },
+            //   ],
+            //   { cancelable: false }
+            // );
           } else alert("Creating Routine Failed");
         }
       );

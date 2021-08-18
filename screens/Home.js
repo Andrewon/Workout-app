@@ -58,6 +58,22 @@ const Home = ({ navigation }) => {
     });
   }, []);
 
+  // var numberOfExercise = 1;
+
+  // const getNumOfExercise = (routineID) => {
+  //   db.transaction((txn) => {
+  //     txn.executeSql(
+  //       "SELECT * FROM exercise_table WHERE routine_id=?",
+  //       [routineID],
+  //       (tx, results) => {
+  //         numberOfExercise = results.rows.length;
+  //         console.log(numberOfExercise);
+  //       },
+  //       []
+  //     );
+  //   });
+  // };
+
   function renderHeader() {
     useEffect(() => {
       db.transaction(function (txn) {
@@ -127,9 +143,13 @@ const Home = ({ navigation }) => {
                 containerStyle={{ marginHorizontal: SIZES.padding }}
                 categoryItem={item}
                 onPress={() =>
-                  navigation.navigate("Display Exercise", {
-                    selectedRoutine: item.routine_id,
-                  })
+                  navigation.navigate(
+                    "Edit Routine",
+                    {
+                      selectedRoutine: item.routine_id,
+                    },
+                    alert("numEx" + numberOfExercise)
+                  )
                 }
               />
             </View>
