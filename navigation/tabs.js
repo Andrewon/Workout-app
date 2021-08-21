@@ -2,7 +2,7 @@ import React from "react";
 import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { Home, DisplayExercise, AddExercise } from "../screens";
+import { Home, DisplayExercise, DisplayAllExercise } from "../screens";
 
 import { TabIcon } from "../components";
 import { COLORS, icons } from "../constants";
@@ -37,7 +37,7 @@ const Tabs = () => {
       />
       <Tab.Screen
         name="Search"
-        component={DisplayExercise}
+        component={DisplayAllExercise}
         options={{
           tabBarIcon: ({ focused }) => (
             <TabIcon focused={focused} icon={icons.search} />

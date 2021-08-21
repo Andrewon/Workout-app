@@ -1,7 +1,8 @@
 import React from "react";
-import { View, TouchableOpacity, Text, Image, Button } from "react-native";
+import { View, TouchableOpacity, Text, Image } from "react-native";
 import DeleteStuff from "../screens/Delete";
 import { useNavigation } from "@react-navigation/native";
+import { Icon, Button } from "react-native-elements";
 
 import { COLORS, FONTS, SIZES } from "../constants";
 
@@ -52,7 +53,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
           </Text>
           {/* prettier-ignore */}
           <Text style={{...FONTS.body4, color: COLORS.gray, paddingTop: 10 }}>
-            {categoryItem.exercises_count} Exercise(s) | {categoryItem.exercises_count * 9} mins
+            {categoryItem.exercises_count} Exercise(s) | {categoryItem.exercises_count * 9} mins | ID: {categoryItem.routine_id}
           </Text>
         </View>
         <View //container for delete and edit buttons
@@ -63,16 +64,20 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
           }}
         >
           <Button
-            title={"Delete"}
-            onPress={() => DeleteStuff({ deleteInfo: categoryItem.routine_id })}
-          />
-          <Button
-            title={"Edit"}
+            icon={<Icon name="edit" size={15} color="gray" type="AntDesign" />}
+            type="clear"
             onPress={() =>
               navigation.navigate("Edit Routine", {
                 selectedRoutine: categoryItem.routine_id,
               })
             }
+          />
+          <Button
+            icon={
+              <Icon name="delete" size={15} color="gray" type="AntDesign" />
+            }
+            type="clear"
+            onPress={() => DeleteStuff({ deleteInfo: categoryItem.routine_id })}
           />
         </View>
       </View>

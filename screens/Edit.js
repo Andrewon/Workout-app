@@ -15,28 +15,26 @@ var db = SQLite.openDatabase("UserDatabase.db");
 const edit = ({ navigation, route }) => {
   let { selectedRoutine } = route.params; //routine_id
   let [routineName, setRoutineName] = useState("");
-
+  // "SELECT * FROM routine_table where routine_id = ?";
+  let [queryBuilder, setQueryBuilder] = useState("");
+  // need "where" in route and use this in if else
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(
-        "SELECT * FROM routine_table where routine_id = ?",
-        [selectedRoutine],
-        (tx, results) => {
-          var len = results.rows.length;
-          if (len > 0) {
-            let res = results.rows.item(0);
-            setRoutineName(res.routine_name);
-          } else {
-            alert("No routine found");
-          }
+      tx.executeSql(queriesRoutineTable, [selectedRoutine], (tx, results) => {
+        var len = results.rows.length;
+        if (len > 0) {
+          let res = results.rows.item(0);
+          setRoutineName(res.routine_name);
+        } else {
+          alert("No routine found");
         }
-      );
+      });
     });
   }, []);
 
   let updateRoutine = () => {
     if (!routineName) {
-      alert("Please enter routine name");
+      alert("Please enter a name");
       return;
     }
 

@@ -1,40 +1,33 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Text,
   SafeAreaView,
   FlatList,
   StatusBar,
   Button,
-  ScrollView,
   Alert,
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import ExerciseCard from "../components/ExerciseCard";
+import { Divider } from "react-native-elements";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
 //test display exercise_table items
-const DisplayExercise = ({ navigation, route }) => {
+const DisplayAllExercise = ({ navigation }) => {
   let [flatListItems, setFlatListItems] = useState([]);
-
-  const { selectedRoutine } = route.params;
 
   function renderList() {
     useEffect(() => {
       db.transaction(function (txn) {
-        txn.executeSql(
-          "SELECT * FROM exercise_table WHERE routine_id=?",
-          [selectedRoutine],
-          (tx, results) => {
-            var temp = [];
-            for (let i = 0; i < results.rows.length; ++i)
-              temp.push(results.rows.item(i));
-            setFlatListItems(temp);
-          }
-        );
+        txn.executeSql("SELECT * FROM exercise_table", [], (tx, results) => {
+          var temp = [];
+          for (let i = 0; i < results.rows.length; ++i)
+            temp.push(results.rows.item(i));
+          setFlatListItems(temp);
+        });
       });
     });
   }
@@ -57,11 +50,12 @@ const DisplayExercise = ({ navigation, route }) => {
           return (
             <View>
               <ExerciseCard
+                where={"Display All"}
                 containerStyle={{ marginHorizontal: SIZES.padding }}
                 exerciseItem={item}
-                onPress={() => console.log("pressed on exercise")}
+                onPress={() => console.log("pressed an exercise")}
               />
-
+              <Divider orientation="horizontal" />
               {/* prettier-ignore */}
               {/* <Text>
                 Exercise name:{item.exercise_name} Set: {item.eset} Rep: {item.rep}
@@ -76,19 +70,9 @@ const DisplayExercise = ({ navigation, route }) => {
             }}
           >
             <Button
-              title={"Finish"}
+              title={"Go back"}
               onPress={() => {
-                Alert.alert(
-                  "You did it",
-                  "Good job!",
-                  [
-                    {
-                      text: "Ok",
-                      onPress: () => navigation.goBack(),
-                    },
-                  ],
-                  { cancelable: true }
-                );
+                navigation.goBack();
               }}
             />
           </View>
@@ -98,4 +82,4 @@ const DisplayExercise = ({ navigation, route }) => {
   );
 };
 
-export default DisplayExercise;
+export default DisplayAllExercise;

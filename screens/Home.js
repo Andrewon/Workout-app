@@ -11,6 +11,7 @@ import CategoryCard from "../components/CategoryCard";
 import * as SQLite from "expo-sqlite";
 
 import { FONTS, COLORS, SIZES, images, icons, dummyData } from "../constants";
+import { Platform } from "react-native";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
@@ -19,15 +20,23 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     db.transaction(function (txn) {
-      txn.executeSql("PRAGMA foreign_keys = ON", []);
+      if (Platform.OS === "web") {
+        console.log("web browser");
+      } else {
+        txn.executeSql(
+          "PRAGMA foreign_keys = ON",
+          [],
+          console.log("foreign key ON")
+        );
+      }
       txn.executeSql(
         "SELECT name FROM sqlite_master WHERE type='table' AND name='routine_table'",
         [],
         function (tx, res) {
           console.log("item_routine:", res.rows.length);
           if (res.rows.length == 0) {
-            txn.executeSql("DROP TABLE IF EXISTS routine_table", []);
-            txn.executeSql(
+            tx.executeSql("DROP TABLE IF EXISTS routine_table", []);
+            tx.executeSql(
               "CREATE TABLE IF NOT EXISTS routine_table(routine_id INTEGER PRIMARY KEY AUTOINCREMENT, routine_name VARCHAR(20), exercises_count INTEGER)",
               [],
               (tx, results) => {
@@ -47,8 +56,8 @@ const Home = ({ navigation }) => {
         function (tx, res) {
           console.log("item_exercise:", res.rows.length);
           if (res.rows.length == 0) {
-            txn.executeSql("DROP TABLE IF EXISTS exercise_table", []);
-            txn.executeSql(
+            tx.executeSql("DROP TABLE IF EXISTS exercise_table", []);
+            tx.executeSql(
               "CREATE TABLE IF NOT EXISTS exercise_table(exercise_id INTEGER PRIMARY KEY AUTOINCREMENT, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
               [],
               (tx, results) => {
