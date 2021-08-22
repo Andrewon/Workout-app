@@ -52,7 +52,7 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
             {categoryItem.routine_name}
           </Text>
           {/* prettier-ignore */}
-          <Text style={{...FONTS.body4, color: COLORS.gray, paddingTop: 10 }}>
+          <Text style={{ ...FONTS.body4, color: COLORS.gray, paddingTop: 10 }}>
             {categoryItem.exercises_count} Exercise(s) | {categoryItem.exercises_count * 9} mins | ID: {categoryItem.routine_id}
           </Text>
         </View>
@@ -68,7 +68,8 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
             type="clear"
             onPress={() =>
               navigation.navigate("Edit Routine", {
-                selectedRoutine: categoryItem.routine_id,
+                selectedID: categoryItem.routine_id,
+                where: "from homepage",
               })
             }
           />

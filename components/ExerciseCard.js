@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import DeleteStuff from "../screens/Delete";
+import { useNavigation } from "@react-navigation/native";
 import { Icon, Button } from "react-native-elements";
 
 import { COLORS, FONTS, SIZES } from "../constants";
 
 const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
+  const navigation = useNavigation();
+
   const [tabColor, setTabColor] = useState(true);
   const switchTabColor = () => setTabColor((prevState) => !prevState);
 
@@ -31,7 +34,8 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
               type="clear"
               onPress={() =>
                 navigation.navigate("Edit Routine", {
-                  selectedRoutine: categoryItem.routine_id,
+                  selectedID: exerciseItem.exercise_id,
+                  where: "from all exercise page",
                 })
               }
             />

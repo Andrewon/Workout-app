@@ -1,64 +1,69 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  SafeAreaView,
-  Text,
-  TextInput,
-  Button,
-  Alert,
-} from "react-native";
+import { View, SafeAreaView, TextInput, Alert } from "react-native";
 import * as SQLite from "expo-sqlite";
+import { Icon, Button } from "react-native-elements";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
 //route contain routine ID for searchRoutine()
 const edit = ({ navigation, route }) => {
-  let { selectedRoutine } = route.params; //routine_id
-  let [routineName, setRoutineName] = useState("");
+  let { selectedID, where } = route.params; //routine_id
+  let [editName, setEditName] = useState("");
   // "SELECT * FROM routine_table where routine_id = ?";
-  let [queryBuilder, setQueryBuilder] = useState("");
-  // need "where" in route and use this in if else
+  var queryBuilder1 = "";
+  var queryBuilder2 = "";
+  // see which page called the edit
+
+  //would these be better to passing from route?
+  if (where == "from homepage") {
+    queryBuilder1 = "SELECT * FROM routine_table where routine_id = ?";
+    queryBuilder2 =
+      "UPDATE routine_table set routine_name=? where routine_id=?";
+  } else if (where == "from all exercise page") {
+    queryBuilder1 = "SELECT * FROM exercise_table where exercise_id = ?";
+    queryBuilder2 =
+      "UPDATE exercise_table set exercise_name=? where exercise_id=?";
+  }
   useEffect(() => {
     db.transaction((tx) => {
-      tx.executeSql(queriesRoutineTable, [selectedRoutine], (tx, results) => {
+      tx.executeSql(queryBuilder1, [selectedID], (tx, results) => {
         var len = results.rows.length;
-        if (len > 0) {
+        if (len > 0 && where == "from homepage") {
           let res = results.rows.item(0);
-          setRoutineName(res.routine_name);
+          setEditName(res.routine_name);
+        } else if (len > 0 && where == "from all exercise page") {
+          let res = results.rows.item(0);
+          setEditName(res.exercise_name);
         } else {
-          alert("No routine found");
+          alert("Not found");
         }
       });
     });
   }, []);
 
   let updateRoutine = () => {
-    if (!routineName) {
+    if (!editName) {
       alert("Please enter a name");
       return;
     }
 
     db.transaction((tx) => {
-      tx.executeSql(
-        "UPDATE routine_table set routine_name=? where routine_id=?",
-        [routineName, selectedRoutine],
-        (tx, results) => {
-          console.log("Results", results.rowsAffected);
-          if (results.rowsAffected > 0) {
-            Alert.alert(
-              "Success",
-              "Routine updated successfully",
-              [
-                {
-                  text: "Ok",
-                  onPress: () => navigation.navigate("Home"),
-                },
-              ],
-              { cancelable: false }
-            );
-          } else alert("Updation Failed");
-        }
-      );
+      tx.executeSql(queryBuilder2, [editName, selectedID], (tx, results) => {
+        console.log("Results", results.rowsAffected);
+        if (results.rowsAffected > 0) {
+          Alert.alert(
+            "Success",
+            "Updated successfully",
+            [
+              {
+                text: "Ok",
+                onPress: () => navigation.navigate("Home"),
+              },
+            ],
+            { cancelable: false }
+          );
+        } else alert("Updation Failed");
+      });
     });
   };
 
@@ -73,15 +78,16 @@ const edit = ({ navigation, route }) => {
       >
         <TextInput
           style={{ flex: 1 }}
-          value={routineName}
-          onChangeText={(routineName) => {
-            setRoutineName(routineName);
+          value={editName}
+          onChangeText={(editName) => {
+            setEditName(editName);
           }}
         />
         <Button
-          title={"delete text"}
+          icon={<Icon name="x-circle" size={15} color="gray" type="feather" />}
+          type="clear"
           onPress={() => {
-            setRoutineName("");
+            setEditName("");
           }}
         />
       </View>
