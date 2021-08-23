@@ -9,11 +9,13 @@ import {
 } from "react-native";
 import CategoryCard from "../components/CategoryCard";
 import * as SQLite from "expo-sqlite";
+import getCurrentDate from "../components/getDateTime";
 
 import { FONTS, COLORS, SIZES, images, icons, dummyData } from "../constants";
 import { Platform } from "react-native";
 
 var db = SQLite.openDatabase("UserDatabase.db");
+var currentDate = getCurrentDate();
 
 const Home = ({ navigation }) => {
   let [flatListItems, setFlatListItems] = useState([]);
@@ -21,7 +23,7 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     db.transaction(function (txn) {
       if (Platform.OS === "web") {
-        console.log("web browser");
+        console.log("web browser", currentDate);
       } else {
         txn.executeSql(
           "PRAGMA foreign_keys = ON",
@@ -62,6 +64,16 @@ const Home = ({ navigation }) => {
               [],
               (tx, results) => {
                 console.log("Results_exercise", results.rowsAffected);
+              },
+              (tx, error) => {
+                console.log(error);
+              }
+            );
+            tx.executeSql(
+              "CREATE TABLE IF NOT EXISTS Session_table(session_id INTEGER PRIMARY KEY AUTOINCREMENT, session_date DATETIME, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, exercise_id INTEGER, FOREIGN KEY (exercise_id) REFERENCES exercise_table(exercise_id))",
+              [],
+              (tx, results) => {
+                console.log("Results_session", results.rowsAffected);
               },
               (tx, error) => {
                 console.log(error);

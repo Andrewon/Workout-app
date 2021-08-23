@@ -22,17 +22,55 @@ const DisplayExercise = ({ navigation, route }) => {
 
   const { selectedRoutine } = route.params;
 
+  useEffect(() => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT * FROM session_table WHERE exercise_id = ?",
+        [selectedRoutine],
+        (tx, results) => {
+          if (results.rows.length == 0) {
+            tx.executeSql(
+              "INSERT INTO session_table(exercise_name,eset,rep,exercise_id) SELECT exercise_name,eset,rep,exercise_id FROM exercise_table WHERE exercise_id = ?",
+              [selectedRoutine],
+              (tx, results) => {
+                console.log(results);
+              },
+              (tx, error) => {
+                console.log(error);
+              }
+            );
+          }
+        }
+      );
+    });
+  }, []);
+
   function renderList() {
     useEffect(() => {
       db.transaction(function (txn) {
         txn.executeSql(
-          "SELECT * FROM exercise_table WHERE routine_id=?",
+          "SELECT * FROM session_table WHERE exercise_id = ?",
           [selectedRoutine],
           (tx, results) => {
-            var temp = [];
-            for (let i = 0; i < results.rows.length; ++i)
-              temp.push(results.rows.item(i));
-            setFlatListItems(temp);
+            if (results.rows.length == 0) {
+              tx.executeSql(
+                "INSERT INTO session_table(exercise_name,eset,rep,exercise_id) SELECT exercise_name,eset,rep,exercise_id FROM exercise_table WHERE exercise_id = ?",
+                [selectedRoutine],
+                (tx, results) => {
+                  console.log(results);
+                },
+                (tx, error) => {
+                  console.log(error);
+                }
+              );
+            } else {
+              var temp = [];
+
+              for (let i = 0; i < results.rows.length; ++i)
+                temp.push(results.rows.item(i));
+
+              setFlatListItems(temp);
+            }
           }
         );
       });
