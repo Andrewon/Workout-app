@@ -13,6 +13,7 @@ import {
 import * as SQLite from "expo-sqlite";
 
 import { COLORS } from "../constants";
+import getExercisesCount from "../components/getExerciseCount";
 
 var db = SQLite.openDatabase("UserDatabase.db");
 
@@ -46,25 +47,6 @@ const AddExercise = ({ navigation, route }) => {
 
     setInputs(_inputs);
     console.log(_inputs[0]["exerName"]);
-  };
-
-  const getExercisesCount = () => {
-    //maybe take this to a whole separate file
-    db.transaction((txn) => {
-      txn.executeSql(
-        "SELECT * FROM exercise_table WHERE routine_id=?",
-        [routineID],
-        (tx, results) => {
-          tx.executeSql(
-            "UPDATE routine_table SET exercises_count=? WHERE routine_id=?",
-            [results.rows.length, routineID]
-          );
-        },
-        (tx, error) => {
-          console.log(error);
-        }
-      );
-    });
   };
 
   //add exercises from inputList into a SQLite
@@ -128,7 +110,7 @@ const AddExercise = ({ navigation, route }) => {
       { cancelable: false }
     );
 
-    getExercisesCount();
+    getExercisesCount(routineID);
   };
 
   return (

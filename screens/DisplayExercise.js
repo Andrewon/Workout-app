@@ -11,10 +11,12 @@ import {
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import ExerciseCard from "../components/ExerciseCard";
+import getCurrentDate from "../components/getDateTime";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 
 var db = SQLite.openDatabase("UserDatabase.db");
+var currentDate = getCurrentDate();
 
 //test display exercise_table items
 const DisplayExercise = ({ navigation, route }) => {
@@ -22,60 +24,75 @@ const DisplayExercise = ({ navigation, route }) => {
 
   const { selectedRoutine } = route.params;
 
-  useEffect(() => {
-    db.transaction(function (txn) {
-      txn.executeSql(
-        "SELECT * FROM session_table WHERE exercise_id = ?",
-        [selectedRoutine],
-        (tx, results) => {
-          if (results.rows.length == 0) {
-            tx.executeSql(
-              "INSERT INTO session_table(exercise_name,eset,rep,exercise_id) SELECT exercise_name,eset,rep,exercise_id FROM exercise_table WHERE exercise_id = ?",
-              [selectedRoutine],
-              (tx, results) => {
-                console.log(results);
-              },
-              (tx, error) => {
-                console.log(error);
-              }
-            );
-          }
-        }
-      );
-    });
-  }, []);
-
   function renderList() {
+    // useEffect(() => {
+    //   db.transaction(function (txn) {
+    //     txn.executeSql(
+    //       "SELECT * FROM session_table WHERE routine_id = ?",
+    //       [selectedRoutine],
+    //       (tx, results) => {
+    //         if (results.rows.length == 0) {
+    //           tx.executeSql(
+    //             "INSERT INTO session_table(exercise_name,eset,rep,routine_id,exercise_id) SELECT exercise_name,eset,rep, routine_id,exercise_id FROM exercise_table WHERE routine_id = ?",
+    //             [selectedRoutine],
+    //             (tx, results) => {
+    //               console.log(results);
+    //             },
+    //             (tx, error) => {
+    //               console.log(error);
+    //             }
+    //           );
+    //         }
+    //       },
+    //       (tx, error) => {
+    //         console.log(error);
+    //       }
+    //     );
+    //   });
+    // }, []);
+
+    const updateSession = (routine) => {
+      useEffect(() => {
+        db.transaction(function (tnx) {
+          txn.executeSql(
+            "INSERT INTO session_table(session_date,exercise_name,eset,rep,routine_id,exercise_id) VALUES (?,?,?,?,?,?)",
+            [
+              currentDate,
+              routine.exercise_name,
+              routine.eset,
+              exercise.rep,
+              selectedRoutine,
+              routine.exercise_id,
+            ],
+            (tx, results) => {
+              console.log("Updated session");
+            },
+            (tx, error) => {
+              console.log(error);
+            }
+          );
+        });
+      }, []);
+    };
+
     useEffect(() => {
       db.transaction(function (txn) {
         txn.executeSql(
-          "SELECT * FROM session_table WHERE exercise_id = ?",
+          "SELECT * FROM exercise_table WHERE routine_id = ?",
           [selectedRoutine],
           (tx, results) => {
-            if (results.rows.length == 0) {
-              tx.executeSql(
-                "INSERT INTO session_table(exercise_name,eset,rep,exercise_id) SELECT exercise_name,eset,rep,exercise_id FROM exercise_table WHERE exercise_id = ?",
-                [selectedRoutine],
-                (tx, results) => {
-                  console.log(results);
-                },
-                (tx, error) => {
-                  console.log(error);
-                }
-              );
-            } else {
-              var temp = [];
+            var temp = [];
 
-              for (let i = 0; i < results.rows.length; ++i)
-                temp.push(results.rows.item(i));
+            for (let i = 0; i < results.rows.length; ++i)
+              temp.push(results.rows.item(i));
 
-              setFlatListItems(temp);
-            }
+            setFlatListItems(temp);
           }
         );
       });
     });
   }
+
   return (
     <SafeAreaView
       style={{

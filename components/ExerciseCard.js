@@ -3,16 +3,20 @@ import { View, TouchableOpacity, Text } from "react-native";
 import DeleteStuff from "../screens/Delete";
 import { useNavigation } from "@react-navigation/native";
 import { Icon, Button } from "react-native-elements";
+import UpdateSession from "./UpdateSession";
+import { Divider } from "react-native-elements";
+import getCurrentDate from "./getDateTime";
 
 import { COLORS, FONTS, SIZES } from "../constants";
 
 const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
   const navigation = useNavigation();
+  var currentDate = getCurrentDate();
 
   const [tabColor, setTabColor] = useState(true);
   const switchTabColor = () => setTabColor((prevState) => !prevState);
 
-  //which page is calling ExerciseCard
+  //which screen is calling ExerciseCard
   if (where == "Display All") {
     return (
       <TouchableOpacity>
@@ -54,10 +58,11 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
       </TouchableOpacity>
     );
   } else {
+    //if called from homescreen
     return (
       <TouchableOpacity
         style={{
-          flexDirection: "row",
+          flexDirection: "column",
           alignItems: "center",
           padding: 10,
           marginTop: 10,
@@ -69,15 +74,36 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
       >
         <View
           style={{
-            width: "65%",
-            flexDirection: "collum",
+            width: "100%",
+            flexDirection: "row",
             flex: 1,
+            justifyContent: "space-between",
           }}
         >
-          <Text>{exerciseItem.exercise_name}</Text>
-          <Text>{exerciseItem.rep} reps</Text>
-          <Text>{exerciseItem.eset} sets</Text>
+          <Text numberOfLines={1} style={{ ...FONTS.body3 }}>
+            {exerciseItem.exercise_name}
+          </Text>
+          <View style={{ flexDirection: "row" }}>
+            <Text style={{ ...FONTS.body3 }}>{exerciseItem.rep} reps X </Text>
+            <Text style={{ ...FONTS.body3 }}>{exerciseItem.eset} sets</Text>
+          </View>
         </View>
+        <View style={{ width: "100%" }}>
+          <Divider orientation="horizontal" color="#939296" />
+        </View>
+
+        {/* if (rep!=0) */}
+        <View style={{ width: "100%" }}>
+          <UpdateSession
+            exercise_name={exerciseItem.exercise_name}
+            exercise_id={exerciseItem.exercise_id}
+            routine_id={exerciseItem.routine_id}
+            totalSet={exerciseItem.eset}
+            currentDate={currentDate}
+          />
+        </View>
+
+        {/* else card color turn green */}
       </TouchableOpacity>
     );
   }
