@@ -103,7 +103,6 @@ const DisplayExercise = ({ navigation, route }) => {
               onPress={() => {
                 if (Platform.OS === "web") {
                   finishSession();
-                  navigation.goBack();
                 } else {
                   Alert.alert(
                     "You did it",
