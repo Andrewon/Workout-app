@@ -8,10 +8,12 @@ import { Divider } from "react-native-elements";
 import getCurrentDate from "./getDateTime";
 
 import { COLORS, FONTS, SIZES } from "../constants";
+import getCurrentSession from "./getCurrentSession";
 
 const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
   const navigation = useNavigation();
   var currentDate = getCurrentDate();
+  var currentSessionID = getCurrentSession(exerciseItem.routine_id);
 
   const [tabColor, setTabColor] = useState(true);
   const switchTabColor = () => setTabColor((prevState) => !prevState);
@@ -70,7 +72,10 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
           backgroundColor: tabColor ? COLORS.gray2 : COLORS.lightGreen,
           ...containerStyle,
         }}
-        onPress={() => switchTabColor()}
+        // onPress={() => switchTabColor()}
+        onPress={() => {
+          alert("from exercise card" + currentSessionID);
+        }}
       >
         <View
           style={{

@@ -3,7 +3,6 @@ import * as SQLite from "expo-sqlite";
 var db = SQLite.openDatabase("UserDatabase.db");
 
 const getExercisesCount = (routineID) => {
-  //maybe take this to a whole separate file
   db.transaction((txn) => {
     txn.executeSql(
       "SELECT * FROM exercise_table WHERE routine_id=?",

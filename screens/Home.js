@@ -71,7 +71,7 @@ const Home = ({ navigation }) => {
             );
             tx.executeSql("DROP TABLE IF EXISTS session_table", []);
             tx.executeSql(
-              "CREATE TABLE IF NOT EXISTS session_table(session_id INTEGER PRIMARY KEY AUTOINCREMENT, session_date DATETIME, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, exercise_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
+              "CREATE TABLE IF NOT EXISTS session_table(session_id INTEGER PRIMARY KEY AUTOINCREMENT, session_date DATETIME, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER,weight INTEGER, routine_id INTEGER, exercise_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
               [],
               (tx, results) => {
                 console.log("Results_session", results.rowsAffected);

@@ -51,29 +51,20 @@ const DisplayExercise = ({ navigation, route }) => {
     //   });
     // }, []);
 
-    const updateSession = (routine) => {
-      useEffect(() => {
-        db.transaction(function (tnx) {
-          txn.executeSql(
-            "INSERT INTO session_table(session_date,exercise_name,eset,rep,routine_id,exercise_id) VALUES (?,?,?,?,?,?)",
-            [
-              currentDate,
-              routine.exercise_name,
-              routine.eset,
-              exercise.rep,
-              selectedRoutine,
-              routine.exercise_id,
-            ],
-            (tx, results) => {
-              console.log("Updated session");
-            },
-            (tx, error) => {
-              console.log(error);
-            }
-          );
-        });
-      }, []);
-    };
+    useEffect(() => {
+      db.transaction(function (txn) {
+        txn.executeSql(
+          "INSERT INTO session_table(session_date,routine_id) VALUES (?,?)",
+          [currentDate, selectedRoutine],
+          (tx, results) => {
+            console.log("Updated session", results);
+          },
+          (tx, error) => {
+            console.log(error);
+          }
+        );
+      });
+    }, []);
 
     useEffect(() => {
       db.transaction(function (txn) {
@@ -83,8 +74,10 @@ const DisplayExercise = ({ navigation, route }) => {
           (tx, results) => {
             var temp = [];
 
-            for (let i = 0; i < results.rows.length; ++i)
+            for (let i = 0; i < results.rows.length; ++i) {
               temp.push(results.rows.item(i));
+              // console.log(results.rows.item(2).exercise_name);
+            }
 
             setFlatListItems(temp);
           }
