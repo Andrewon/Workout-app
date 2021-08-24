@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TextInput, Text } from "react-native";
 import * as SQLite from "expo-sqlite";
+import getCurrentSession from "./getCurrentSession";
 
 import { Icon, Button } from "react-native-elements";
 
@@ -14,19 +15,42 @@ const UpdateSession = ({
   currentDate,
 }) => {
   let [rep, setRep] = useState("");
-  let [weight, setEset] = useState("");
-  let [currentSet, setCurrentSet] = useState(totalSet);
+  let [weight, setWeight] = useState("");
+  let [remainingSet, setRemainingSet] = useState(0);
+  var currentSessionID = getCurrentSession(routine_id);
 
-  const updateExercise = () => {
+  useEffect(() => {
     db.transaction(function (txn) {
       txn.executeSql(
-        "INSERT INTO session_table(session_date,exercise_name,eset,rep,weight,routine_id,exercise_id) VALUES (?,?,?,?,?,?,?)",
+        "SELECT exercise_id,remaining_set, MAX(session_id) FROM session_table WHERE session_status=? AND exercise_id=?",
+        [0, exercise_id],
+        (tx, results) => {
+          if (results.rows.item(0).exercise_id != null) {
+            console.log(results);
+            setRemainingSet(results.rows.item(0).remaining_set);
+          } else {
+            console.log("can't find session", results);
+            setRemainingSet(totalSet);
+          }
+        },
+        (tx, error) => {
+          console.log(error);
+        }
+      );
+    });
+  }, []);
+
+  const updateExercise = (currentSet) => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "INSERT INTO session_table(session_date,exercise_name,eset,rep,weight,remaining_set,routine_id,exercise_id) VALUES (?,?,?,?,?,?,?,?)",
         [
           currentDate,
           exercise_name,
           currentSet,
           rep,
           weight,
+          remainingSet - 1,
           routine_id,
           exercise_id,
         ],
@@ -43,10 +67,10 @@ const UpdateSession = ({
   const getResult = () => {
     db.transaction(function (txn) {
       txn.executeSql(
-        "SELECT * FROM session_table",
-        [],
+        "SELECT * FROM session_table WHERE session_id=?",
+        [currentSessionID + 1],
         (tx, results) => {
-          console.log("Session_table data: ", results);
+          console.log("Session_table data: ", totalSet, results);
         },
         (tx, error) => {
           console.log(error);
@@ -64,9 +88,10 @@ const UpdateSession = ({
       }}
     >
       <View>
-        <Text>Set remaining: {currentSet}</Text>
+        <Text>Set remaining: {remainingSet}</Text>
         <TextInput
           placeholder={"Enter rep"}
+          keyboardType={"number-pad"}
           style={{ flex: 1 }}
           value={rep}
           onChangeText={(rep) => {
@@ -75,10 +100,11 @@ const UpdateSession = ({
         />
         <TextInput
           placeholder={"Enter weight"}
+          keyboardType={"number-pad"}
           style={{ flex: 1 }}
           value={weight}
           onChangeText={(weight) => {
-            setEset(weight);
+            setWeight(weight);
           }}
         />
       </View>
@@ -87,7 +113,7 @@ const UpdateSession = ({
           title="Log"
           type="outline"
           onPress={() => {
-            if (currentSet != 0) {
+            if (remainingSet != 0) {
               if (!rep) {
                 alert("Please enter rep");
                 return;
@@ -96,8 +122,9 @@ const UpdateSession = ({
                 alert("Please enter weight");
                 return;
               }
-              setCurrentSet(currentSet - 1);
-              updateExercise();
+
+              updateExercise(totalSet - (remainingSet - 1));
+              setRemainingSet(remainingSet - 1);
               getResult();
             }
           }}

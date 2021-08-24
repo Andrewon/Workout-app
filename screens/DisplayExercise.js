@@ -11,61 +11,21 @@ import {
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import ExerciseCard from "../components/ExerciseCard";
-import getCurrentDate from "../components/getDateTime";
+import getCurrentSession from "../components/getCurrentSession";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
+import { Platform } from "react-native";
 
 var db = SQLite.openDatabase("UserDatabase.db");
-var currentDate = getCurrentDate();
 
 //test display exercise_table items
 const DisplayExercise = ({ navigation, route }) => {
   let [flatListItems, setFlatListItems] = useState([]);
 
   const { selectedRoutine } = route.params;
+  var currentSessionID = getCurrentSession(selectedRoutine);
 
   function renderList() {
-    // useEffect(() => {
-    //   db.transaction(function (txn) {
-    //     txn.executeSql(
-    //       "SELECT * FROM session_table WHERE routine_id = ?",
-    //       [selectedRoutine],
-    //       (tx, results) => {
-    //         if (results.rows.length == 0) {
-    //           tx.executeSql(
-    //             "INSERT INTO session_table(exercise_name,eset,rep,routine_id,exercise_id) SELECT exercise_name,eset,rep, routine_id,exercise_id FROM exercise_table WHERE routine_id = ?",
-    //             [selectedRoutine],
-    //             (tx, results) => {
-    //               console.log(results);
-    //             },
-    //             (tx, error) => {
-    //               console.log(error);
-    //             }
-    //           );
-    //         }
-    //       },
-    //       (tx, error) => {
-    //         console.log(error);
-    //       }
-    //     );
-    //   });
-    // }, []);
-
-    useEffect(() => {
-      db.transaction(function (txn) {
-        txn.executeSql(
-          "INSERT INTO session_table(session_date,routine_id) VALUES (?,?)",
-          [currentDate, selectedRoutine],
-          (tx, results) => {
-            console.log("Updated session", results);
-          },
-          (tx, error) => {
-            console.log(error);
-          }
-        );
-      });
-    }, []);
-
     useEffect(() => {
       db.transaction(function (txn) {
         txn.executeSql(
@@ -85,6 +45,21 @@ const DisplayExercise = ({ navigation, route }) => {
       });
     });
   }
+
+  const finishSession = () => {
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "UPDATE session_table SET session_status=? WHERE routine_id=? AND session_status=?",
+        [currentSessionID, selectedRoutine, 0],
+        (tx, results) => {
+          console.log("Finished session", results);
+        },
+        (tx, error) => {
+          console.log(error);
+        }
+      );
+    });
+  };
 
   return (
     <SafeAreaView
@@ -126,17 +101,25 @@ const DisplayExercise = ({ navigation, route }) => {
             <Button
               title={"Finish"}
               onPress={() => {
-                Alert.alert(
-                  "You did it",
-                  "Good job!",
-                  [
-                    {
-                      text: "Ok",
-                      onPress: () => navigation.goBack(),
-                    },
-                  ],
-                  { cancelable: true }
-                );
+                if (Platform.OS === "web") {
+                  finishSession();
+                  navigation.goBack();
+                } else {
+                  Alert.alert(
+                    "You did it",
+                    "Good job!",
+                    [
+                      {
+                        text: "Ok",
+                        onPress: () => {
+                          finishSession();
+                          navigation.goBack();
+                        },
+                      },
+                    ],
+                    { cancelable: true }
+                  );
+                }
               }}
             />
           </View>

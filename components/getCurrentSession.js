@@ -24,6 +24,7 @@ const getCurrentSession = (routineID) => {
       }
     );
   });
+  //check the last session, if done =1 then increase session number by 1, else using the same.
 
   return currentSessionID;
 };
