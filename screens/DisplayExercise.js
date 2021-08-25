@@ -11,7 +11,6 @@ import {
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import ExerciseCard from "../components/ExerciseCard";
-import getCurrentSession from "../components/getCurrentSession";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import { Platform } from "react-native";
@@ -23,8 +22,8 @@ const DisplayExercise = ({ navigation, route }) => {
   let [flatListItems, setFlatListItems] = useState([]);
 
   const { selectedRoutine } = route.params;
-  var currentSessionID = getCurrentSession(selectedRoutine);
 
+  //causing problem when unmount, need fix later
   function renderList() {
     useEffect(() => {
       db.transaction(function (txn) {
@@ -50,7 +49,7 @@ const DisplayExercise = ({ navigation, route }) => {
     db.transaction(function (txn) {
       txn.executeSql(
         "UPDATE session_table SET session_status=? WHERE routine_id=? AND session_status=?",
-        [currentSessionID, selectedRoutine, 0],
+        [1, selectedRoutine, 0],
         (tx, results) => {
           console.log("Finished session", results);
         },
@@ -112,7 +111,6 @@ const DisplayExercise = ({ navigation, route }) => {
                         text: "Ok",
                         onPress: () => {
                           finishSession();
-                          navigation.goBack();
                         },
                       },
                     ],

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { View, TextInput, Text } from "react-native";
 import * as SQLite from "expo-sqlite";
-import getCurrentSession from "./getCurrentSession";
 
 import { Icon, Button } from "react-native-elements";
 
@@ -17,7 +16,6 @@ const UpdateSession = ({
   let [rep, setRep] = useState("");
   let [weight, setWeight] = useState("");
   let [remainingSet, setRemainingSet] = useState("");
-  var currentSessionID = getCurrentSession(routine_id);
 
   useEffect(() => {
     db.transaction(function (txn) {
@@ -56,21 +54,6 @@ const UpdateSession = ({
         ],
         (tx, results) => {
           console.log("Updated session");
-        },
-        (tx, error) => {
-          console.log(error);
-        }
-      );
-    });
-  };
-
-  const getResult = () => {
-    db.transaction(function (txn) {
-      txn.executeSql(
-        "SELECT * FROM session_table WHERE session_id=?",
-        [currentSessionID + 1],
-        (tx, results) => {
-          console.log("Session_table data: ", totalSet, results);
         },
         (tx, error) => {
           console.log(error);
@@ -125,7 +108,6 @@ const UpdateSession = ({
 
               updateExercise(totalSet - (remainingSet - 1));
               setRemainingSet(remainingSet - 1);
-              getResult();
             }
           }}
         />
