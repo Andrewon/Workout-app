@@ -11,8 +11,9 @@ import {
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import ExerciseCard from "../components/ExerciseCard";
-import getCurrentSession from "../components/getCurrentSession";
+
 import finishSession from "../components/finishSession";
+
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import { Platform } from "react-native";
@@ -24,8 +25,8 @@ const DisplayExercise = ({ navigation, route }) => {
   let [flatListItems, setFlatListItems] = useState([]);
 
   const { selectedRoutine } = route.params;
-  var currentSessionID = getCurrentSession(selectedRoutine);
 
+  //causing problem when unmount, need fix later
   function renderList() {
     useEffect(() => {
       db.transaction(function (txn) {
@@ -46,6 +47,7 @@ const DisplayExercise = ({ navigation, route }) => {
       });
     });
   }
+
 
   return (
     <SafeAreaView
@@ -90,6 +92,7 @@ const DisplayExercise = ({ navigation, route }) => {
                 if (Platform.OS === "web") {
                   finishSession(currentSessionID, selectedRoutine);
                 } else {
+
                   finishSession(currentSessionID, selectedRoutine);
                   // Alert.alert(
                   //   "You did it",
@@ -104,6 +107,7 @@ const DisplayExercise = ({ navigation, route }) => {
                   //   ],
                   //   { cancelable: true }
                   // );
+
                 }
               }}
             />

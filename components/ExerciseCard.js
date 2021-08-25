@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
 import DeleteStuff from "../screens/Delete";
 import { useNavigation } from "@react-navigation/native";
@@ -6,14 +6,15 @@ import { Icon, Button } from "react-native-elements";
 import UpdateSession from "./UpdateSession";
 import { Divider } from "react-native-elements";
 import getCurrentDate from "./getDateTime";
+import * as SQLite from "expo-sqlite";
+
+var db = SQLite.openDatabase("UserDatabase.db");
 
 import { COLORS, FONTS, SIZES } from "../constants";
-import getCurrentSession from "./getCurrentSession";
 
 const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
   const navigation = useNavigation();
   var currentDate = getCurrentDate();
-  var currentSessionID = getCurrentSession(exerciseItem.routine_id);
 
   const [tabColor, setTabColor] = useState(true);
 
@@ -77,7 +78,9 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
         }}
         // onPress={() => switchTabColor()}
         onPress={() => {
-          console.log(currentSessionID);
+
+          alert("from exercise card");
+
         }}
       >
         <View
