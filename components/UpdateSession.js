@@ -16,7 +16,7 @@ const UpdateSession = ({
 }) => {
   let [rep, setRep] = useState("");
   let [weight, setWeight] = useState("");
-  let [remainingSet, setRemainingSet] = useState(0);
+  let [remainingSet, setRemainingSet] = useState("");
   var currentSessionID = getCurrentSession(routine_id);
 
   useEffect(() => {
