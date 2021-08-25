@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import * as SQLite from "expo-sqlite";
 import ExerciseCard from "../components/ExerciseCard";
+import displaySessionData from "../components/displaySessionData";
 
 import finishSession from "../components/finishSession";
 
@@ -46,6 +47,8 @@ const DisplayExercise = ({ navigation, route }) => {
               setFlatListItems(temp);
             }
           );
+        } else {
+          console.log("DisplayExercise.js dismounted");
         }
       });
 
@@ -54,6 +57,36 @@ const DisplayExercise = ({ navigation, route }) => {
       };
     });
   }
+
+  const renderDisplayExerciseHeader = () => {
+    // let [sessionDataList, setSessionData] = useState([]);
+    // db.transaction(function (txn) {
+    //   txn.executeSql(
+    //     "SELECT * FROM session_table WHERE routine_id=?",
+    //     [selectedRoutine],
+    //     (tx, results) => {
+    //       var temp = [];
+    //       for (let i = 0; i < results.rows.length; ++i) {
+    //         temp.push(results.rows.item(i));
+    //       }
+    //       setSessionData(temp);
+    //     }
+    //   );
+    // });
+    // return (
+    //   <ScrollView style={{ height: 200 }}>
+    //     {sessionDataList.map((data) => {
+    //       return (
+    //         <View key={data.session_id}>
+    //           <Text>
+    //             {data.session_id} name: {data.exercise_name}
+    //           </Text>
+    //         </View>
+    //       );
+    //     })}
+    //   </ScrollView>
+    // );
+  };
 
   return (
     <SafeAreaView
@@ -69,7 +102,21 @@ const DisplayExercise = ({ navigation, route }) => {
         keyExtractor={(item, index) => "${item.exercise_id}" + index}
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={<View>{renderList()}</View>}
+        ListHeaderComponent={
+          <View>
+            {(renderList(), renderDisplayExerciseHeader())}
+            <Button
+              title={"Finish"}
+              onPress={() => {
+                if (Platform.OS === "web") {
+                  finishSession(selectedRoutine);
+                } else {
+                  finishSession(selectedRoutine);
+                }
+              }}
+            />
+          </View>
+        }
         renderItem={({ item }) => {
           return (
             <View>
@@ -91,31 +138,7 @@ const DisplayExercise = ({ navigation, route }) => {
             style={{
               marginBottom: 100,
             }}
-          >
-            <Button
-              title={"Finish"}
-              onPress={() => {
-                if (Platform.OS === "web") {
-                  finishSession(selectedRoutine);
-                } else {
-                  finishSession(selectedRoutine);
-                  // Alert.alert(
-                  //   "You did it",
-                  //   "Good job!",
-                  //   [
-                  //     {
-                  //       text: "Ok",
-                  //       onPress: () => {
-                  //         finishSession(selectedRoutine);
-                  //       },
-                  //     },
-                  //   ],
-                  //   { cancelable: true }
-                  // );
-                }
-              }}
-            />
-          </View>
+          ></View>
         }
       ></FlatList>
     </SafeAreaView>
