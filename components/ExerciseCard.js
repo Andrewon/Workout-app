@@ -16,7 +16,10 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
   var currentSessionID = getCurrentSession(exerciseItem.routine_id);
 
   const [tabColor, setTabColor] = useState(true);
-  const switchTabColor = () => setTabColor((prevState) => !prevState);
+
+  const switchTabColor = (onOff) => {
+    setTabColor(onOff);
+  };
 
   //which screen is calling ExerciseCard
   if (where == "Display All") {
@@ -74,7 +77,7 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
         }}
         // onPress={() => switchTabColor()}
         onPress={() => {
-          alert("from exercise card" + currentSessionID);
+          console.log(currentSessionID);
         }}
       >
         <View
@@ -105,6 +108,7 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
             routine_id={exerciseItem.routine_id}
             totalSet={exerciseItem.eset}
             currentDate={currentDate}
+            switchColor={switchTabColor}
           />
         </View>
 

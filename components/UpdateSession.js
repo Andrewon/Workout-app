@@ -13,6 +13,7 @@ const UpdateSession = ({
   routine_id,
   totalSet,
   currentDate,
+  switchColor,
 }) => {
   let [rep, setRep] = useState("");
   let [weight, setWeight] = useState("");
@@ -28,9 +29,15 @@ const UpdateSession = ({
           if (results.rows.item(0).exercise_id != null) {
             console.log(results);
             setRemainingSet(results.rows.item(0).remaining_set);
+            if (results.rows.item(0).remaining_set == 0) {
+              switchColor(false);
+            } else {
+              switchColor(true);
+            }
           } else {
             console.log("can't find session", results);
             setRemainingSet(totalSet);
+            switchColor(true);
           }
         },
         (tx, error) => {
@@ -126,6 +133,9 @@ const UpdateSession = ({
               updateExercise(totalSet - (remainingSet - 1));
               setRemainingSet(remainingSet - 1);
               getResult();
+              if (remainingSet == 1) {
+                switchColor(false);
+              }
             }
           }}
         />

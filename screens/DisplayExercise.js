@@ -12,6 +12,7 @@ import {
 import * as SQLite from "expo-sqlite";
 import ExerciseCard from "../components/ExerciseCard";
 import getCurrentSession from "../components/getCurrentSession";
+import finishSession from "../components/finishSession";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import { Platform } from "react-native";
@@ -45,21 +46,6 @@ const DisplayExercise = ({ navigation, route }) => {
       });
     });
   }
-
-  const finishSession = () => {
-    db.transaction(function (txn) {
-      txn.executeSql(
-        "UPDATE session_table SET session_status=? WHERE routine_id=? AND session_status=?",
-        [currentSessionID, selectedRoutine, 0],
-        (tx, results) => {
-          console.log("Finished session", results);
-        },
-        (tx, error) => {
-          console.log(error);
-        }
-      );
-    });
-  };
 
   return (
     <SafeAreaView
@@ -102,22 +88,22 @@ const DisplayExercise = ({ navigation, route }) => {
               title={"Finish"}
               onPress={() => {
                 if (Platform.OS === "web") {
-                  finishSession();
+                  finishSession(currentSessionID, selectedRoutine);
                 } else {
-                  Alert.alert(
-                    "You did it",
-                    "Good job!",
-                    [
-                      {
-                        text: "Ok",
-                        onPress: () => {
-                          finishSession();
-                          navigation.goBack();
-                        },
-                      },
-                    ],
-                    { cancelable: true }
-                  );
+                  finishSession(currentSessionID, selectedRoutine);
+                  // Alert.alert(
+                  //   "You did it",
+                  //   "Good job!",
+                  //   [
+                  //     {
+                  //       text: "Ok",
+                  //       onPress: () => {
+                  //         finishSession(currentSessionID, selectedRoutine);
+                  //       },
+                  //     },
+                  //   ],
+                  //   { cancelable: true }
+                  // );
                 }
               }}
             />
