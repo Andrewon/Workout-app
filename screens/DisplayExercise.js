@@ -14,7 +14,6 @@ import ExerciseCard from "../components/ExerciseCard";
 
 import finishSession from "../components/finishSession";
 
-
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import { Platform } from "react-native";
 
@@ -29,25 +28,32 @@ const DisplayExercise = ({ navigation, route }) => {
   //causing problem when unmount, need fix later
   function renderList() {
     useEffect(() => {
+      let mounted = true;
+
       db.transaction(function (txn) {
-        txn.executeSql(
-          "SELECT * FROM exercise_table WHERE routine_id = ?",
-          [selectedRoutine],
-          (tx, results) => {
-            var temp = [];
+        if (mounted) {
+          txn.executeSql(
+            "SELECT * FROM exercise_table WHERE routine_id = ?",
+            [selectedRoutine],
+            (tx, results) => {
+              var temp = [];
 
-            for (let i = 0; i < results.rows.length; ++i) {
-              temp.push(results.rows.item(i));
-              // console.log(results.rows.item(2).exercise_name);
+              for (let i = 0; i < results.rows.length; ++i) {
+                temp.push(results.rows.item(i));
+                // console.log(results.rows.item(2).exercise_name);
+              }
+
+              setFlatListItems(temp);
             }
-
-            setFlatListItems(temp);
-          }
-        );
+          );
+        }
       });
+
+      return function cleanup() {
+        mounted = false;
+      };
     });
   }
-
 
   return (
     <SafeAreaView
@@ -90,10 +96,9 @@ const DisplayExercise = ({ navigation, route }) => {
               title={"Finish"}
               onPress={() => {
                 if (Platform.OS === "web") {
-                  finishSession(currentSessionID, selectedRoutine);
+                  finishSession(selectedRoutine);
                 } else {
-
-                  finishSession(currentSessionID, selectedRoutine);
+                  finishSession(selectedRoutine);
                   // Alert.alert(
                   //   "You did it",
                   //   "Good job!",
@@ -101,13 +106,12 @@ const DisplayExercise = ({ navigation, route }) => {
                   //     {
                   //       text: "Ok",
                   //       onPress: () => {
-                  //         finishSession(currentSessionID, selectedRoutine);
+                  //         finishSession(selectedRoutine);
                   //       },
                   //     },
                   //   ],
                   //   { cancelable: true }
                   // );
-
                 }
               }}
             />

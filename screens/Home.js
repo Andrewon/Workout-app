@@ -21,69 +21,75 @@ const Home = ({ navigation }) => {
   let [flatListItems, setFlatListItems] = useState([]);
 
   useEffect(() => {
-    db.transaction(function (txn) {
-      if (Platform.OS === "web") {
-        console.log("web browser", currentDate);
-      } else {
+    let mounted = true;
+    if (mounted) {
+      db.transaction(function (txn) {
+        if (Platform.OS === "web") {
+          console.log("web browser", currentDate);
+        } else {
+          txn.executeSql(
+            "PRAGMA foreign_keys = ON",
+            [],
+            console.log("foreign key ON")
+          );
+        }
         txn.executeSql(
-          "PRAGMA foreign_keys = ON",
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='routine_table'",
           [],
-          console.log("foreign key ON")
+          function (tx, res) {
+            console.log("item_routine:", res.rows.length);
+            if (res.rows.length == 0) {
+              tx.executeSql("DROP TABLE IF EXISTS routine_table", []);
+              tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS routine_table(routine_id INTEGER PRIMARY KEY AUTOINCREMENT, routine_name VARCHAR(20), exercises_count INTEGER)",
+                [],
+                (tx, results) => {
+                  console.log("Results_routine", results.rowsAffected);
+                },
+                (tx, error) => {
+                  console.log(error);
+                }
+              );
+            }
+          }
         );
-      }
-      txn.executeSql(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='routine_table'",
-        [],
-        function (tx, res) {
-          console.log("item_routine:", res.rows.length);
-          if (res.rows.length == 0) {
-            tx.executeSql("DROP TABLE IF EXISTS routine_table", []);
-            tx.executeSql(
-              "CREATE TABLE IF NOT EXISTS routine_table(routine_id INTEGER PRIMARY KEY AUTOINCREMENT, routine_name VARCHAR(20), exercises_count INTEGER)",
-              [],
-              (tx, results) => {
-                console.log("Results_routine", results.rowsAffected);
-              },
-              (tx, error) => {
-                console.log(error);
-              }
-            );
-          }
-        }
-      );
 
-      txn.executeSql(
-        "SELECT name FROM sqlite_master WHERE type='table' AND name='exercise_table'",
-        [],
-        function (tx, res) {
-          console.log("item_exercise:", res.rows.length);
-          if (res.rows.length == 0) {
-            tx.executeSql("DROP TABLE IF EXISTS exercise_table", []);
-            tx.executeSql(
-              "CREATE TABLE IF NOT EXISTS exercise_table(exercise_id INTEGER PRIMARY KEY AUTOINCREMENT, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
-              [],
-              (tx, results) => {
-                console.log("Results_exercise", results.rowsAffected);
-              },
-              (tx, error) => {
-                console.log(error);
-              }
-            );
-            tx.executeSql("DROP TABLE IF EXISTS session_table", []);
-            tx.executeSql(
-              "CREATE TABLE IF NOT EXISTS session_table(session_id INTEGER PRIMARY KEY AUTOINCREMENT, session_date DATETIME, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER,weight INTEGER,session_status INTEGER DEFAULT 0, remaining_set INTEGER, routine_id INTEGER, exercise_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
-              [],
-              (tx, results) => {
-                console.log("Results_session", results.rowsAffected);
-              },
-              (tx, error) => {
-                console.log(error);
-              }
-            );
+        txn.executeSql(
+          "SELECT name FROM sqlite_master WHERE type='table' AND name='exercise_table'",
+          [],
+          function (tx, res) {
+            console.log("item_exercise:", res.rows.length);
+            if (res.rows.length == 0) {
+              tx.executeSql("DROP TABLE IF EXISTS exercise_table", []);
+              tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS exercise_table(exercise_id INTEGER PRIMARY KEY AUTOINCREMENT, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER, routine_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
+                [],
+                (tx, results) => {
+                  console.log("Results_exercise", results.rowsAffected);
+                },
+                (tx, error) => {
+                  console.log(error);
+                }
+              );
+              tx.executeSql("DROP TABLE IF EXISTS session_table", []);
+              tx.executeSql(
+                "CREATE TABLE IF NOT EXISTS session_table(session_id INTEGER PRIMARY KEY AUTOINCREMENT, session_date DATETIME, exercise_name VARCHAR(20), eset INTEGER, rep INTEGER,weight INTEGER,session_status INTEGER DEFAULT 0, remaining_set INTEGER, routine_id INTEGER, exercise_id INTEGER, FOREIGN KEY (routine_id) REFERENCES routine_table(routine_id))",
+                [],
+                (tx, results) => {
+                  console.log("Results_session", results.rowsAffected);
+                },
+                (tx, error) => {
+                  console.log(error);
+                }
+              );
+            }
           }
-        }
-      );
-    });
+        );
+      });
+    }
+    return function cleanup() {
+      mounted = false;
+    };
   }, []);
 
   function renderHeader() {

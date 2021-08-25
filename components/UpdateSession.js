@@ -116,11 +116,9 @@ const UpdateSession = ({
               updateExercise(totalSet - (remainingSet - 1));
               setRemainingSet(remainingSet - 1);
 
-              getResult();
               if (remainingSet == 1) {
                 switchColor(false);
               }
-
             }
           }}
         />
