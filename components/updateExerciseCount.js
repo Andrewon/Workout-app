@@ -1,8 +1,6 @@
-import * as SQLite from "expo-sqlite";
+import { db } from "./DatabaseH";
 
-var db = SQLite.openDatabase("UserDatabase.db");
-
-const getExercisesCount = (routineID) => {
+const updateExercisesCount = (routineID) => {
   db.transaction((txn) => {
     txn.executeSql(
       "SELECT * FROM exercise_table WHERE routine_id=?",
@@ -19,4 +17,4 @@ const getExercisesCount = (routineID) => {
     );
   });
 };
-export default getExercisesCount;
+export default updateExercisesCount;

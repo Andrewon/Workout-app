@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, TextInput, Text } from "react-native";
-import * as SQLite from "expo-sqlite";
+import { db } from "./DatabaseH";
 
 import { Icon, Button } from "react-native-elements";
-
-var db = SQLite.openDatabase("UserDatabase.db");
 
 const UpdateSession = ({
   exercise_name,

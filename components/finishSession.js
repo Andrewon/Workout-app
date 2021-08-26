@@ -1,6 +1,4 @@
-import * as SQLite from "expo-sqlite";
-
-var db = SQLite.openDatabase("UserDatabase.db");
+import { db } from "./DatabaseH";
 
 const finishSession = (selectedRoutine) => {
   db.transaction(function (txn) {

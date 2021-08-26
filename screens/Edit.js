@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, SafeAreaView, TextInput, Alert } from "react-native";
-import * as SQLite from "expo-sqlite";
+import { db } from "../components/DatabaseH";
 import { Icon, Button } from "react-native-elements";
-
-var db = SQLite.openDatabase("UserDatabase.db");
 
 //route contain routine ID for searchRoutine()
 const edit = ({ navigation, route }) => {

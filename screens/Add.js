@@ -8,10 +8,7 @@ import {
   Alert,
 } from "react-native";
 import { SIZES } from "../constants";
-import * as SQLite from "expo-sqlite";
-import { useEffect } from "react/cjs/react.production.min";
-
-var db = SQLite.openDatabase("UserDatabase.db");
+import { db } from "../components/DatabaseH";
 
 const Add = ({ navigation }) => {
   var [RoutineName, setRoutineName] = useState("");
@@ -42,7 +39,9 @@ const Add = ({ navigation }) => {
             // get routine_id from insertID result to pass to AddExercise.js
             routineID = results.insertId;
             console.log(routineID);
+
             add_exercise();
+
             // Alert.alert(
             //   "Success",
             //   "Routine Added Successfully",
@@ -61,7 +60,7 @@ const Add = ({ navigation }) => {
           } else alert("Creating Routine Failed");
         }
       );
-    });
+    }, []);
   };
 
   return (
@@ -74,7 +73,12 @@ const Add = ({ navigation }) => {
           placeholder={"Enter Routine Name"}
         ></TextInput>
 
-        <Button title={"Submit"} onPress={add_user} />
+        <Button
+          title={"Submit"}
+          onPress={() => {
+            add_user();
+          }}
+        />
       </View>
     </SafeAreaView>
   );

@@ -9,7 +9,7 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import * as SQLite from "expo-sqlite";
+import { db } from "../components/DatabaseH";
 import ExerciseCard from "../components/ExerciseCard";
 import displaySessionData from "../components/displaySessionData";
 
@@ -18,15 +18,13 @@ import finishSession from "../components/finishSession";
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import { Platform } from "react-native";
 
-var db = SQLite.openDatabase("UserDatabase.db");
-
 //test display exercise_table items
 const DisplayExercise = ({ navigation, route }) => {
   let [flatListItems, setFlatListItems] = useState([]);
+  let [rerender, setRender] = useState(0);
 
   const { selectedRoutine } = route.params;
 
-  //causing problem when unmount, need fix later
   function renderList() {
     useEffect(() => {
       let mounted = true;
@@ -45,6 +43,7 @@ const DisplayExercise = ({ navigation, route }) => {
               }
 
               setFlatListItems(temp);
+              console.log("rendering");
             }
           );
         } else {
@@ -55,7 +54,7 @@ const DisplayExercise = ({ navigation, route }) => {
       return function cleanup() {
         mounted = false;
       };
-    });
+    }, [rerender]);
   }
 
   const renderDisplayExerciseHeader = () => {
@@ -123,7 +122,7 @@ const DisplayExercise = ({ navigation, route }) => {
               <ExerciseCard
                 containerStyle={{ marginHorizontal: SIZES.padding }}
                 exerciseItem={item}
-                onPress={() => console.log("pressed on exercise")}
+                onPress={() => setRender(rerender + 1)}
               />
 
               {/* prettier-ignore */}

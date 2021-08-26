@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { View, TouchableOpacity, Text } from "react-native";
-import DeleteStuff from "../screens/Delete";
+import DeleteStuff from "./Delete";
 import { useNavigation } from "@react-navigation/native";
 import { Icon, Button } from "react-native-elements";
 import UpdateSession from "./UpdateSession";
 import { Divider } from "react-native-elements";
 import getCurrentDate from "./getDateTime";
-import * as SQLite from "expo-sqlite";
-
-var db = SQLite.openDatabase("UserDatabase.db");
 
 import { COLORS, FONTS, SIZES } from "../constants";
 
@@ -56,7 +53,10 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
               }
               type="clear"
               onPress={() =>
-                DeleteStuff({ deleteInfo: categoryItem.routine_id })
+                DeleteStuff({
+                  deleteInfo: exerciseItem.exercise_id,
+                  deleteWhat: "exercise",
+                })
               }
             />
           </View>
@@ -76,12 +76,7 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
           backgroundColor: tabColor ? COLORS.gray2 : COLORS.lightGreen,
           ...containerStyle,
         }}
-        // onPress={() => switchTabColor()}
-        onPress={() => {
-
-          alert("from exercise card");
-
-        }}
+        onPress={onPress}
       >
         <View
           style={{

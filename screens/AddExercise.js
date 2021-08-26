@@ -10,19 +10,13 @@ import {
   SafeAreaView,
   Alert,
 } from "react-native";
-import * as SQLite from "expo-sqlite";
+import { db } from "../components/DatabaseH";
 
 import { COLORS } from "../constants";
-import getExercisesCount from "../components/getExerciseCount";
-
-var db = SQLite.openDatabase("UserDatabase.db");
+import updateExercisesCount from "../components/updateExerciseCount";
 
 const AddExercise = ({ navigation, route }) => {
   let { routineID } = route.params;
-
-  useEffect(() => {
-    alert(routineID);
-  }, []);
 
   const [inputList, setInputs] = useState([
     { exerSet: "", exerRep: "", exerName: "" },
@@ -49,7 +43,7 @@ const AddExercise = ({ navigation, route }) => {
     console.log(_inputs[0]["exerName"]);
   };
 
-  //add exercises from inputList into a SQLite
+  //add exercises from inputList into SQLite
   let add_exercise = () => {
     for (let i = 0; i < inputList.length; i++) {
       if (!inputList[i]["exerName"]) {
@@ -110,7 +104,7 @@ const AddExercise = ({ navigation, route }) => {
       { cancelable: false }
     );
 
-    getExercisesCount(routineID);
+    updateExercisesCount(routineID);
   };
 
   return (

@@ -1,13 +1,23 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, TouchableOpacity, Text, Image } from "react-native";
-import DeleteStuff from "../screens/Delete";
+import DeleteStuff from "./Delete";
 import { useNavigation } from "@react-navigation/native";
 import { Icon, Button } from "react-native-elements";
 
 import { COLORS, FONTS, SIZES } from "../constants";
+import updateExercisesCount from "./updateExerciseCount";
 
-const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
+const CategoryCard = ({
+  containerStyle,
+  categoryItem,
+  onPress,
+  forceRender,
+}) => {
   const navigation = useNavigation();
+
+  useEffect(() => {
+    updateExercisesCount(categoryItem.routine_id);
+  }, []);
 
   return (
     <TouchableOpacity
@@ -78,7 +88,13 @@ const CategoryCard = ({ containerStyle, categoryItem, onPress }) => {
               <Icon name="delete" size={15} color="gray" type="AntDesign" />
             }
             type="clear"
-            onPress={() => DeleteStuff({ deleteInfo: categoryItem.routine_id })}
+            onPress={() => {
+              DeleteStuff({
+                deleteInfo: categoryItem.routine_id,
+                deleteWhat: "routine",
+              });
+              forceRender();
+            }}
           />
         </View>
       </View>

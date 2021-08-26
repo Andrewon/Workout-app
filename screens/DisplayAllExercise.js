@@ -7,13 +7,11 @@ import {
   Button,
   Alert,
 } from "react-native";
-import * as SQLite from "expo-sqlite";
+import { db } from "../components/DatabaseH";
 import ExerciseCard from "../components/ExerciseCard";
 import { Divider } from "react-native-elements";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
-
-var db = SQLite.openDatabase("UserDatabase.db");
 
 //test display exercise_table items
 const DisplayAllExercise = ({ navigation }) => {
@@ -56,10 +54,6 @@ const DisplayAllExercise = ({ navigation }) => {
                 onPress={() => console.log("pressed an exercise")}
               />
               <Divider orientation="horizontal" />
-              {/* prettier-ignore */}
-              {/* <Text>
-                Exercise name:{item.exercise_name} Set: {item.eset} Rep: {item.rep}
-              </Text> */}
             </View>
           );
         }}
