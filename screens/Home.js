@@ -11,7 +11,7 @@ import CategoryCard from "../components/CategoryCard";
 import * as SQLite from "expo-sqlite";
 import getCurrentDate from "../components/getDateTime";
 
-import { FONTS, COLORS, SIZES, images, icons, dummyData } from "../constants";
+import { FONTS, COLORS, SIZES } from "../constants";
 import { Platform } from "react-native";
 
 var db = SQLite.openDatabase("UserDatabase.db");
