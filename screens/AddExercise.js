@@ -119,7 +119,7 @@ const AddExercise = ({ navigation, route }) => {
           }}
         />
         {inputList.map((input, index) => (
-          <View>
+          <View key={index}>
             <TextInput
               placeholder={"Enter Name"}
               value={input.exerName}

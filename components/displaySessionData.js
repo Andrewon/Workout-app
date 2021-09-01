@@ -1,27 +1,25 @@
-import * as SQLite from "expo-sqlite";
+import { db } from "./DatabaseH";
 import { useState } from "react";
 
-var db = SQLite.openDatabase("UserDatabase.db");
-
 const displaySessionData = (routineID) => {
-  let [flatListItems, setFlatListItems] = useState([]);
-  db.transaction(function (txn) {
-    txn.executeSql(
-      "SELECT * FROM session_table WHERE routine_id=?",
-      [routineID],
-      (tx, results) => {
-        var temp = [];
+  return new Promise((resolve, reject) => {
+    let [flatListItems, setFlatListItems] = useState([]);
+    db.transaction(function (txn) {
+      txn.executeSql(
+        "SELECT * FROM session_table WHERE routine_id=?",
+        [routineID],
+        (tx, results) => {
+          var temp = [];
 
-        for (let i = 0; i < results.rows.length; ++i) {
-          temp.push(results.rows.item(i));
+          for (let i = 0; i < results.rows.length; ++i) {
+            temp.push(results.rows.item(i));
+          }
+          setFlatListItems(temp);
         }
-
-        setFlatListItems(temp);
-      }
-    );
+      );
+    });
+    resolve(flatListItems);
   });
-
-  return flatListItems;
 };
 
 export default displaySessionData;
