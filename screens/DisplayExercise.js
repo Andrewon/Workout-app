@@ -9,6 +9,8 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
+// import { LineChart } from "react-native-chart-kit";
+import { Grid, LineChart, XAxis, YAxis } from "react-native-svg-charts";
 import { db } from "../components/DatabaseH";
 import ExerciseCard from "../components/ExerciseCard";
 import displaySessionData from "../components/displaySessionData";
@@ -17,12 +19,16 @@ import finishSession from "../components/finishSession";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import { Platform } from "react-native";
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
 
 //test display exercise_table items
 const DisplayExercise = ({ navigation, route }) => {
   let [flatListItems, setFlatListItems] = useState([]);
-  let [rerender, setRender] = useState(0);
+  let [exerciseID, setExerID] = useState(0);
   let [sessionData, setSessionData] = useState([]);
+  let [exerciseName, setExerName] = useState("");
 
   const { selectedRoutine } = route.params;
 
@@ -49,8 +55,8 @@ const DisplayExercise = ({ navigation, route }) => {
           );
 
           txn.executeSql(
-            "SELECT * FROM session_table WHERE routine_id=?",
-            [selectedRoutine],
+            "SELECT DISTINCT weight, strftime('%m/%d', session_date) as session_date FROM session_table WHERE routine_id=? AND exercise_id=?",
+            [selectedRoutine, exerciseID],
             (tx, results) => {
               var temp2 = [];
 
@@ -59,7 +65,7 @@ const DisplayExercise = ({ navigation, route }) => {
               }
 
               setSessionData(temp2);
-              console.log("session data populating");
+              console.log("session data populating", temp2);
             }
           );
         } else {
@@ -70,19 +76,102 @@ const DisplayExercise = ({ navigation, route }) => {
       return function cleanup() {
         mounted = false;
       };
-    }, [rerender]);
+    }, [exerciseID]);
+  }
+
+  const data = {
+    labels: [],
+    datasets: [
+      {
+        data: [],
+      },
+    ],
+  };
+
+  if (sessionData.length != 0) {
+    for (let i = 0; i < sessionData.length; i++) {
+      const { weight, session_date } = sessionData[i];
+      data.labels.push(session_date);
+      data.datasets[0].data.push(weight);
+      console.log(data);
+    }
+  } else {
+    data.labels.push("today");
+    data.datasets[0].data.push(0);
   }
 
   const RenderDisplayExerciseHeader = () => {
-    console.log(sessionData[0] && sessionData[0].eset);
+    const data = [
+      50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80, 24, 85,
+      91, 35, 53, -53, 24, 50, 24, 85, 91, 35, 53, -53, 24, 50, 24, 85, 91, 35,
+      53, -53, 24, 50,
+    ];
+
+    const axesSvg = { fontSize: 10, fill: "grey" };
+    const verticalContentInset = { top: 10, bottom: 10 };
+    const xAxisHeight = 30;
+
+    console.log("Tim session length", sessionData.length);
     return (
-      <View style={{ height: "200px" }}>
-        <Text>result {sessionData[0] && sessionData[0].eset}</Text>
+      <View>
+        {/* prettier-ignore */}
         <Text>
-          {" "}
-          Exercise Name: {sessionData[0] && sessionData[0].exercise_name}{" "}
-          Exercise Date: {sessionData[0] && sessionData[0].session_date}
+          {exerciseName ? exerciseName : "Select an exercise to display"} progress
         </Text>
+        <View style={{ height: 200, padding: 20, flexDirection: "row" }}>
+          <YAxis
+            data={data}
+            style={{ marginBottom: xAxisHeight }}
+            contentInset={verticalContentInset}
+            svg={axesSvg}
+          />
+          <View style={{ flex: 1, marginLeft: 10 }}>
+            <LineChart
+              style={{ flex: 1 }}
+              data={data}
+              contentInset={verticalContentInset}
+              svg={{ stroke: "rgb(134, 65, 244)" }}
+            >
+              <Grid />
+            </LineChart>
+            <XAxis
+              style={{ marginHorizontal: -10, height: xAxisHeight }}
+              data={data}
+              formatLabel={(value, index) => index}
+              contentInset={{ left: 10, right: 10 }}
+              svg={axesSvg}
+            />
+          </View>
+        </View>
+        {/* <LineChart
+          data={data}
+          width={Dimensions.get("window").width} // from react-native
+          height={220}
+          yAxisLabel=""
+          yAxisSuffix="lbs"
+          yAxisInterval={1} // optional, defaults to 1
+          chartConfig={{
+            backgroundColor: "#0078e0",
+            backgroundGradientFrom: "#009efa",
+            backgroundGradientTo: "#24cfff",
+            decimalPlaces: 0, // optional, defaults to 2dp
+            color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+            style: {
+              borderRadius: 4,
+            },
+            propsForDots: {
+              r: "3",
+              strokeWidth: "2",
+              stroke: "#ffa726",
+            },
+          }}
+          bezier
+          style={{
+            marginVertical: 8,
+            borderRadius: 4,
+          }}
+        /> */}
       </View>
     );
   };
@@ -122,7 +211,10 @@ const DisplayExercise = ({ navigation, route }) => {
               <ExerciseCard
                 containerStyle={{ marginHorizontal: SIZES.padding }}
                 exerciseItem={item}
-                onPress={() => setRender(rerender + 1)}
+                onPress={() => {
+                  setExerID(item.exercise_id);
+                  setExerName(item.exercise_name);
+                }}
               />
 
               {/* prettier-ignore */}
