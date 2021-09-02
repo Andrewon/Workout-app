@@ -78,6 +78,11 @@ const DisplayExercise = ({ navigation, route }) => {
     return (
       <View style={{ height: "200px" }}>
         <Text>result {sessionData[0] && sessionData[0].eset}</Text>
+        <Text>
+          {" "}
+          Exercise Name: {sessionData[0] && sessionData[0].exercise_name}{" "}
+          Exercise Date: {sessionData[0] && sessionData[0].session_date}
+        </Text>
       </View>
     );
   };
