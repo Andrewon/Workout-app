@@ -9,8 +9,8 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-// import { LineChart } from "react-native-chart-kit";
-import { Grid, LineChart, XAxis, YAxis } from "react-native-svg-charts";
+import { LineChart } from "react-native-chart-kit";
+// import { Grid, LineChart, XAxis, YAxis } from "react-native-svg-charts";
 import { db } from "../components/DatabaseH";
 import ExerciseCard from "../components/ExerciseCard";
 import displaySessionData from "../components/displaySessionData";
@@ -101,16 +101,6 @@ const DisplayExercise = ({ navigation, route }) => {
   }
 
   const RenderDisplayExerciseHeader = () => {
-    const data = [
-      50, 10, 40, 95, -4, -24, 85, 91, 35, 53, -53, 24, 50, -20, -80, 24, 85,
-      91, 35, 53, -53, 24, 50, 24, 85, 91, 35, 53, -53, 24, 50, 24, 85, 91, 35,
-      53, -53, 24, 50,
-    ];
-
-    const axesSvg = { fontSize: 10, fill: "grey" };
-    const verticalContentInset = { top: 10, bottom: 10 };
-    const xAxisHeight = 30;
-
     console.log("Tim session length", sessionData.length);
     return (
       <View>
@@ -118,37 +108,13 @@ const DisplayExercise = ({ navigation, route }) => {
         <Text>
           {exerciseName ? exerciseName : "Select an exercise to display"} progress
         </Text>
-        <View style={{ height: 200, padding: 20, flexDirection: "row" }}>
-          <YAxis
-            data={data}
-            style={{ marginBottom: xAxisHeight }}
-            contentInset={verticalContentInset}
-            svg={axesSvg}
-          />
-          <View style={{ flex: 1, marginLeft: 10 }}>
-            <LineChart
-              style={{ flex: 1 }}
-              data={data}
-              contentInset={verticalContentInset}
-              svg={{ stroke: "rgb(134, 65, 244)" }}
-            >
-              <Grid />
-            </LineChart>
-            <XAxis
-              style={{ marginHorizontal: -10, height: xAxisHeight }}
-              data={data}
-              formatLabel={(value, index) => index}
-              contentInset={{ left: 10, right: 10 }}
-              svg={axesSvg}
-            />
-          </View>
-        </View>
-        {/* <LineChart
+
+        <LineChart
           data={data}
           width={Dimensions.get("window").width} // from react-native
           height={220}
           yAxisLabel=""
-          yAxisSuffix="lbs"
+          yAxisSuffix=" lbs"
           yAxisInterval={1} // optional, defaults to 1
           chartConfig={{
             backgroundColor: "#0078e0",
@@ -171,7 +137,7 @@ const DisplayExercise = ({ navigation, route }) => {
             marginVertical: 8,
             borderRadius: 4,
           }}
-        /> */}
+        />
       </View>
     );
   };
