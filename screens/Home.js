@@ -132,7 +132,7 @@ const Home = ({ navigation }) => {
           <View>
             {/* Header */}
             {renderHeader()}
-            {/* Create New  routine, maybe darkmode button, edit button */}
+
             <Button
               onPress={() => {
                 navigation.navigate("Create");

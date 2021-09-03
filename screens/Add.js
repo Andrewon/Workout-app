@@ -1,14 +1,8 @@
 import React, { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  Button,
-  SafeAreaView,
-  Alert,
-} from "react-native";
-import { SIZES } from "../constants";
+import { View, Text, TextInput, SafeAreaView, Alert } from "react-native";
+import { COLORS, SIZES } from "../constants";
 import { db } from "../components/DatabaseH";
+import { Button, Icon } from "react-native-elements";
 
 const Add = ({ navigation }) => {
   var [RoutineName, setRoutineName] = useState("");
@@ -64,7 +58,38 @@ const Add = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginHorizontal: 5,
+        }}
+      >
+        <Button
+          icon={
+            <Icon
+              name="arrow-back-ios"
+              size={20}
+              color="gray"
+              type="materialicons"
+            />
+          }
+          type="clear"
+          onPress={() => navigation.goBack()}
+        />
+        <Text>Create Exercise</Text>
+        <Button
+          icon={
+            <Icon name="done-all" size={20} color="gray" type="materialicons" />
+          }
+          type="clear"
+          onPress={() => {
+            add_user();
+          }}
+        />
+      </View>
       <View>
         <TextInput
           style={SIZES.input}
@@ -72,13 +97,6 @@ const Add = ({ navigation }) => {
           value={RoutineName}
           placeholder={"Enter Routine Name"}
         ></TextInput>
-
-        <Button
-          title={"Submit"}
-          onPress={() => {
-            add_user();
-          }}
-        />
       </View>
     </SafeAreaView>
   );

@@ -1,28 +1,14 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-  FlatList,
-  StatusBar,
-  Button,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { View, Text, SafeAreaView, FlatList, StatusBar } from "react-native";
 import { LineChart } from "react-native-chart-kit";
-// import { Grid, LineChart, XAxis, YAxis } from "react-native-svg-charts";
 import { db } from "../components/DatabaseH";
 import ExerciseCard from "../components/ExerciseCard";
-import displaySessionData from "../components/displaySessionData";
-
 import finishSession from "../components/finishSession";
+import { Button, Icon } from "react-native-elements";
 
 import { FONTS, COLORS, SIZES, images, icons } from "../constants";
 import { Platform } from "react-native";
 import { Dimensions } from "react-native";
-
-const screenWidth = Dimensions.get("window").width;
-
 //test display exercise_table items
 const DisplayExercise = ({ navigation, route }) => {
   let [flatListItems, setFlatListItems] = useState([]);
@@ -46,7 +32,6 @@ const DisplayExercise = ({ navigation, route }) => {
 
               for (let i = 0; i < results.rows.length; ++i) {
                 temp.push(results.rows.item(i));
-                // console.log(results.rows.item(2).exercise_name);
               }
 
               setFlatListItems(temp);
@@ -104,11 +89,49 @@ const DisplayExercise = ({ navigation, route }) => {
     console.log("Tim session length", sessionData.length);
     return (
       <View>
-        {/* prettier-ignore */}
-        <Text>
-          {exerciseName ? exerciseName : "Select an exercise to display"} progress
-        </Text>
-
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            marginHorizontal: 5,
+          }}
+        >
+          <Button
+            icon={
+              <Icon
+                name="arrow-back-ios"
+                size={20}
+                color="gray"
+                type="materialicons"
+              />
+            }
+            type="clear"
+            onPress={() => navigation.goBack()}
+          />
+          <Text>
+            {exerciseName ? exerciseName : "Select an exercise to display"}{" "}
+            progress
+          </Text>
+          <Button
+            icon={
+              <Icon
+                name="done-all"
+                size={20}
+                color="gray"
+                type="materialicons"
+              />
+            }
+            type="clear"
+            onPress={() => {
+              if (Platform.OS === "web") {
+                finishSession(selectedRoutine);
+              } else {
+                finishSession(selectedRoutine);
+              }
+            }}
+          />
+        </View>
         <LineChart
           data={data}
           width={Dimensions.get("window").width} // from react-native
@@ -134,10 +157,11 @@ const DisplayExercise = ({ navigation, route }) => {
           }}
           bezier
           style={{
-            marginVertical: 8,
-            borderRadius: 4,
+            marginTop: 1,
+            marginBottom: 5,
           }}
         />
+        {/* prettier-ignore */}
       </View>
     );
   };
@@ -150,27 +174,14 @@ const DisplayExercise = ({ navigation, route }) => {
       }}
     >
       <StatusBar barStyle={"default"} />
+
       <RenderDisplayExerciseHeader> </RenderDisplayExerciseHeader>
       <FlatList
         data={flatListItems}
         keyExtractor={(item, index) => "${item.exercise_id}" + index}
         keyboardDismissMode="on-drag"
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <View>
-            {renderList()}
-            <Button
-              title={"Finish"}
-              onPress={() => {
-                if (Platform.OS === "web") {
-                  finishSession(selectedRoutine);
-                } else {
-                  finishSession(selectedRoutine);
-                }
-              }}
-            />
-          </View>
-        }
+        ListHeaderComponent={<View>{renderList()}</View>}
         renderItem={({ item }) => {
           return (
             <View>
@@ -182,11 +193,6 @@ const DisplayExercise = ({ navigation, route }) => {
                   setExerName(item.exercise_name);
                 }}
               />
-
-              {/* prettier-ignore */}
-              {/* <Text>
-                Exercise name:{item.exercise_name} Set: {item.eset} Rep: {item.rep}
-              </Text> */}
             </View>
           );
         }}

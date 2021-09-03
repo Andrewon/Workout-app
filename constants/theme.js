@@ -39,6 +39,7 @@ export const SIZES = {
     height: 35,
     margin: 12,
     borderWidth: 1,
+    padding: 3,
   },
 
   // font sizes

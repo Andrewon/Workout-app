@@ -7,12 +7,10 @@ import { Icon, Button } from "react-native-elements";
 const edit = ({ navigation, route }) => {
   let { selectedID, where } = route.params; //routine_id
   let [editName, setEditName] = useState("");
-  // "SELECT * FROM routine_table where routine_id = ?";
   var queryBuilder1 = "";
   var queryBuilder2 = "";
   // see which page called the edit
 
-  //would these be better to passing from route?
   if (where == "from homepage") {
     queryBuilder1 = "SELECT * FROM routine_table where routine_id = ?";
     queryBuilder2 =

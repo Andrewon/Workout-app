@@ -39,14 +39,12 @@ const CategoryCard = ({
           width: 100,
           height: 100,
           borderRadius: SIZES.radius,
-          //backgroundColor: "blue",
         }}
       />
       <View
         style={{
           width: "65%",
           flexDirection: "collum",
-          //backgroundColor: "red",
           flex: 1,
         }}
       >
@@ -54,7 +52,6 @@ const CategoryCard = ({
           style={{
             paddingHorizontal: 20,
             paddingVertical: 5,
-            //backgroundColor: "green",
             flex: 1,
           }}
         >
@@ -70,11 +67,10 @@ const CategoryCard = ({
           style={{
             flexDirection: "row",
             justifyContent: "flex-end",
-            //backgroundColor: "black",
           }}
         >
           <Button
-            icon={<Icon name="edit" size={15} color="gray" type="AntDesign" />}
+            icon={<Icon name="edit" size={17} color="gray" type="AntDesign" />}
             type="clear"
             onPress={() =>
               navigation.navigate("Edit Routine", {
@@ -85,7 +81,12 @@ const CategoryCard = ({
           />
           <Button
             icon={
-              <Icon name="delete" size={15} color="gray" type="AntDesign" />
+              <Icon
+                name="delete-forever"
+                size={17}
+                color="gray"
+                type="materialicons"
+              />
             }
             type="clear"
             onPress={() => {

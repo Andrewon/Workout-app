@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
-  Button,
   TextInput,
   TouchableOpacity,
   StyleSheet,
@@ -11,8 +10,12 @@ import {
   Alert,
 } from "react-native";
 import { db } from "../components/DatabaseH";
+import { Button, Icon } from "react-native-elements";
+import { Dimensions } from "react-native";
 
-import { COLORS } from "../constants";
+const screenHeight = Dimensions.get("window").height;
+
+import { COLORS, SIZES } from "../constants";
 import updateExercisesCount from "../components/updateExerciseCount";
 
 const AddExercise = ({ navigation, route }) => {
@@ -36,7 +39,6 @@ const AddExercise = ({ navigation, route }) => {
   const inputHandler = (text, key, name) => {
     const _inputs = [...inputList];
     console.log(text, "key:  " + key, "name: " + name);
-    // name is a 2d array column consist of inputList  [name,name,name...]
     _inputs[key][name] = text;
 
     setInputs(_inputs);
@@ -98,7 +100,7 @@ const AddExercise = ({ navigation, route }) => {
       [
         {
           text: "Ok",
-          onPress: () => navigation.goBack(),
+          onPress: () => navigation.navigate("Home"),
         },
       ],
       { cancelable: false }
@@ -108,64 +110,112 @@ const AddExercise = ({ navigation, route }) => {
   };
 
   return (
-    <SafeAreaView>
-      <ScrollView>
-        <Button title="Add" onPress={addHandler} />
-        <Button title="Submit" onPress={add_exercise} />
+    <SafeAreaView style={{ backgroundColor: COLORS.white, flex: 1 }}>
+      <View style={styles.container}>
         <Button
-          title={"test going back"}
+          icon={
+            <Icon
+              name="arrow-back-ios"
+              size={20}
+              color="gray"
+              type="materialicons"
+            />
+          }
+          type="clear"
+          onPress={() => navigation.goBack()}
+        />
+        <Text>Add Exercise</Text>
+
+        <Button
+          icon={
+            <Icon name="done-all" size={20} color="gray" type="materialicons" />
+          }
+          type="clear"
           onPress={() => {
-            navigation.goBack();
+            add_exercise();
           }}
         />
-        {inputList.map((input, index) => (
-          <View key={index}>
-            <TextInput
-              placeholder={"Enter Name"}
-              value={input.exerName}
-              editable={true}
-              onChangeText={(text) => inputHandler(text, index, "exerName")}
+      </View>
+
+      <View style={{ height: screenHeight - 100 }}>
+        <ScrollView>
+          {inputList.map((input, index) => (
+            <View key={index} style={styles.inputContainer}>
+              <TextInput
+                placeholder={"Enter Name"}
+                value={input.exerName}
+                editable={true}
+                onChangeText={(text) => inputHandler(text, index, "exerName")}
+              />
+              <TextInput
+                placeholder={"Enter Set"}
+                value={input.exerSep}
+                keyboardType={"number-pad"}
+                onChangeText={(text) => inputHandler(text, index, "exerSet")}
+              />
+              <TextInput
+                placeholder={"Enter Rep"}
+                value={input.exerRep}
+                keyboardType={"number-pad"}
+                onChangeText={(text) => inputHandler(text, index, "exerRep")}
+              />
+
+              <Button
+                style={{
+                  alignSelf: "flex-end",
+                }}
+                icon={
+                  <Icon
+                    name="delete-forever"
+                    size={17}
+                    color="gray"
+                    type="materialicons"
+                  />
+                }
+                type="clear"
+                onPress={() => {
+                  deleteHandler(index);
+                }}
+              />
+            </View>
+          ))}
+        </ScrollView>
+        <Button
+          style={{ alignItems: "flex-end", marginRight: 20 }}
+          icon={
+            <Icon
+              name="playlist-add"
+              size={25}
+              color="black"
+              type="materialicons"
             />
-            <TextInput
-              placeholder={"Enter Set"}
-              value={input.exerSep}
-              keyboardType={"number-pad"}
-              onChangeText={(text) => inputHandler(text, index, "exerSet")}
-            />
-            <TextInput
-              placeholder={"Enter Rep"}
-              value={input.exerRep}
-              keyboardType={"number-pad"}
-              onChangeText={(text) => inputHandler(text, index, "exerRep")}
-            />
-            <TouchableOpacity onPress={() => deleteHandler(index)}>
-              <Text style={{ color: "red", fontSize: 13 }}>Delete</Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </ScrollView>
+          }
+          type="clear"
+          onPress={() => {
+            addHandler();
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "white",
-  },
-  inputsContainer: {
-    flex: 1,
-    marginBottom: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginHorizontal: 5,
   },
   inputContainer: {
     flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "lightgray",
-    padding: 10,
+    justifyContent: "flex-start",
+    paddingHorizontal: 10,
+    paddingTop: 10,
+    marginTop: 10,
+    borderRadius: SIZES.radius,
     backgroundColor: COLORS.gray2,
+    marginHorizontal: SIZES.padding,
   },
 });
 
