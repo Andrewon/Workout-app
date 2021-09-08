@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  SafeAreaView,
-  FlatList,
-  StatusBar,
-  Button,
-  Alert,
-} from "react-native";
+import { View, SafeAreaView, FlatList, StatusBar, Button } from "react-native";
 import { db } from "../components/DatabaseH";
 import ExerciseCard from "../components/ExerciseCard";
 import { Divider } from "react-native-elements";

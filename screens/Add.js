@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, SafeAreaView, Alert } from "react-native";
+import { View, Text, TextInput, SafeAreaView } from "react-native";
 import { COLORS, SIZES } from "../constants";
 import { db } from "../components/DatabaseH";
 import { Button, Icon } from "react-native-elements";
@@ -35,22 +35,6 @@ const Add = ({ navigation }) => {
             console.log(routineID);
 
             add_exercise();
-
-            // Alert.alert(
-            //   "Success",
-            //   "Routine Added Successfully",
-
-            //   [
-            //     {
-            //       text: "Ok",
-            //       onPress: () =>
-            //         navigation.navigate("Add Exercise", {
-            //           routineID: results.insertId,
-            //         }),
-            //     },
-            //   ],
-            //   { cancelable: false }
-            // );
           } else alert("Creating Routine Failed");
         }
       );

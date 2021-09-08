@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, TextInput, Text } from "react-native";
 import { db } from "./DatabaseH";
 
-import { Icon, Button } from "react-native-elements";
+import { Button } from "react-native-elements";
 
 const UpdateSession = ({
   exercise_name,

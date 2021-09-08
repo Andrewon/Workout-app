@@ -6,7 +6,7 @@ import ExerciseCard from "../components/ExerciseCard";
 import finishSession from "../components/finishSession";
 import { Button, Icon } from "react-native-elements";
 
-import { FONTS, COLORS, SIZES, images, icons } from "../constants";
+import { COLORS, SIZES } from "../constants";
 import { Platform } from "react-native";
 import { Dimensions } from "react-native";
 //test display exercise_table items
