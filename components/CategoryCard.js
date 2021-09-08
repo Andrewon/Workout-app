@@ -33,7 +33,7 @@ const CategoryCard = ({
       onPress={onPress}
     >
       <Image
-        source={require("../assets/images/recipes/icons8-weightlifting-96.png")}
+        source={require("../assets/images/body-part/icons8-weightlifting-96.png")}
         resizeMode="cover"
         style={{
           width: 100,
