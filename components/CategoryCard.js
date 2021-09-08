@@ -60,7 +60,7 @@ const CategoryCard = ({
           </Text>
           {/* prettier-ignore */}
           <Text style={{ ...FONTS.body4, color: COLORS.gray, paddingTop: 10 }}>
-            {categoryItem.exercises_count} Exercise(s) | {categoryItem.exercises_count * 9} mins | ID: {categoryItem.routine_id}
+            {categoryItem.exercises_count} Exercise(s) | {categoryItem.exercises_count * 9} mins
           </Text>
         </View>
         <View //container for delete and edit buttons

@@ -134,6 +134,7 @@ const Home = ({ navigation }) => {
             {renderHeader()}
 
             <Button
+              buttonStyle={{ backgroundColor: "#009efa" }}
               onPress={() => {
                 navigation.navigate("Create");
               }}
