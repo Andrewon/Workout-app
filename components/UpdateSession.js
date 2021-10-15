@@ -10,7 +10,7 @@ const UpdateSession = ({
   routine_id,
   totalSet,
   currentDate,
-  switchColor,
+  isTabColorChange,
 }) => {
   let [rep, setRep] = useState("");
   let [weight, setWeight] = useState("");
@@ -26,14 +26,14 @@ const UpdateSession = ({
             console.log(results);
             setRemainingSet(results.rows.item(0).remaining_set);
             if (results.rows.item(0).remaining_set == 0) {
-              switchColor(false);
+              isTabColorChange(false);
             } else {
-              switchColor(true);
+              isTabColorChange(true);
             }
           } else {
             console.log("can't find session", results);
             setRemainingSet(totalSet);
-            switchColor(true);
+            isTabColorChange(true);
           }
         },
         (tx, error) => {
@@ -115,7 +115,7 @@ const UpdateSession = ({
               setRemainingSet(remainingSet - 1);
 
               if (remainingSet == 1) {
-                switchColor(false);
+                isTabColorChange(false);
               }
             }
           }}
