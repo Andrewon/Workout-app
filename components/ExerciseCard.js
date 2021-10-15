@@ -15,8 +15,8 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
 
   const [tabColor, setTabColor] = useState(true);
 
-  const switchTabColor = (onOff) => {
-    setTabColor(onOff);
+  const switchTabColor = (isGreen) => {
+    setTabColor(isGreen);
   };
 
   //which screen is calling ExerciseCard
@@ -106,7 +106,7 @@ const ExerciseCard = ({ containerStyle, exerciseItem, onPress, where }) => {
             routine_id={exerciseItem.routine_id}
             totalSet={exerciseItem.eset}
             currentDate={currentDate}
-            switchColor={switchTabColor}
+            isTabColorChange={switchTabColor}
           />
         </View>
 
